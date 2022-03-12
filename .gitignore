@@ -1,3 +1,6 @@
+#SDL include and bin
+SDL/
+
 # Prerequisites
 *.d
 
