@@ -1,6 +1,7 @@
 #SDL include and bin
 SDL/
-
+#Format code
+.editorconfig
 # Prerequisites
 *.d
 
