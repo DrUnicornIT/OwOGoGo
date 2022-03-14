@@ -8,7 +8,7 @@
 #include <cmath>
 #include <stdlib.h>
 
-// #include "renderwindow.h"
+#include "renderwindow.h"
 // #include "background.h"
 
 const int SCREEN_WIDTH = 800;
