@@ -12,7 +12,7 @@ public:
     int getStatus(int p_index);
     int getLength();
     bool isTileBelow(float x, int width);
-    void update(int score);
+    void update(int score, float& newHeghtGround, float& gravity );
     void reset();
 private:
     std::vector<GroundStatus> groundTiles;

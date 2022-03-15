@@ -27,7 +27,6 @@ void RenderWindow::create(const char* p_title, int p_w, int p_h)
 
 SDL_Texture* RenderWindow::loadTexture(const char* p_filePath)
 {
-	printf("Load media");
 	SDL_Texture* texture = NULL;
 	texture = IMG_LoadTexture(renderer, p_filePath);
 
@@ -45,7 +44,6 @@ void RenderWindow::clear()
 
 void RenderWindow::render(Entity& p_entity)
 {
-	printf("1");
 	for (int i = p_entity.getSize() - 1; i >= 0; i--)
 	{
 		SDL_Rect src;
@@ -66,7 +64,6 @@ void RenderWindow::render(Entity& p_entity)
 
 void RenderWindow::render(float p_x, float p_y, SDL_Texture* p_tex)
 {
-	printf("2");
 	SDL_Rect src;
 	src.x = 0;
 	src.y = 0;
@@ -83,7 +80,6 @@ void RenderWindow::render(float p_x, float p_y, SDL_Texture* p_tex)
 
 void RenderWindow::render(float p_x, float p_y, const char* p_text, TTF_Font* font, SDL_Color textColor)
 {
-	printf("3");
 	SDL_Surface* surfaceMessage = TTF_RenderText_Blended(font, p_text, textColor);
 	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
@@ -126,7 +122,6 @@ void RenderWindow::renderCenter(float p_x, float p_y, const char* p_text, TTF_Fo
 
 void RenderWindow::display()
 {
-	printf("-1001");
 	SDL_RenderPresent(renderer);
 }
 
