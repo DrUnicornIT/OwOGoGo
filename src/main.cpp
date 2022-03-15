@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #include "renderwindow.h"
-// #include "background.h"
+#include "ground.h"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 480;
@@ -18,8 +18,8 @@ bool init();
 bool loadMedia();
 bool runGame();
 
-SDL_Window* gWindow = NULL;
-SDL_Renderer* gRenderer = NULL;
+RenderWindow window;
+SDL_Texture* groundTexture[4];
 
 bool init()
 {
@@ -36,55 +36,49 @@ bool init()
 		{
 			printf("Warning: Linear texture filtering not enabled!");
 		}
-
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-		if (gWindow == NULL)
+		int imgFlags = IMG_INIT_PNG;
+		if (!(IMG_Init(imgFlags) & imgFlags))
 		{
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+			printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 			success = false;
 		}
-		else
+
+		if (TTF_Init() == -1)
 		{
-			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-			if (gRenderer == NULL)
-			{
-				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
-				success = false;
-			}
-			else
-			{
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+			success = false;
+		}
 
-				int imgFlags = IMG_INIT_PNG;
-				if (!(IMG_Init(imgFlags) & imgFlags))
-				{
-					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
-					success = false;
-				}
-
-				if (TTF_Init() == -1)
-				{
-					printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
-					success = false;
-				}
-
-				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-				{
-					printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-					success = false;
-				}
-			}
+		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+		{
+			printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+			success = false;
 		}
 	}
 	return success;
 }
 
+
+
 bool loadMedia()
 {
 	bool success = true;
+	window.create("OwOGoGo", SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	groundTexture[0] = window.loadTexture("img/left.png");
+	if (groundTexture[0] == NULL) {
+		printf("Failed to load left texture!\n");
+		success = false;
+	}
+	groundTexture[1] = window.loadTexture("img/center.png");
+	groundTexture[2] = window.loadTexture("img/right.png");
+	groundTexture[3] = window.loadTexture("img/hole.png");
 	return success;
 }
+
+bool Load = loadMedia();
+
+Ground ground(groundTexture[0], groundTexture[1], groundTexture[2], groundTexture[3]);
 
 bool runGame()
 {
@@ -94,16 +88,23 @@ bool runGame()
 	bool quit = false;
 	while (!quit) {
 		while (SDL_PollEvent(&event) != 0) {
-			if (event.type == SDL_QUIT) {
+			switch (event.type) {
+			case SDL_QUIT: {
 				quit = true;
+				break;
+			}
 			}
 		}
+		ground.update(50);
+		window.clear();
+		/// 0 easy, 50 normal, 100 hard
 
-		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_RenderClear(gRenderer);
-
-		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_RenderPresent(gRenderer);
+		for (int i = 0; i < ground.getLength(); i++)
+		{
+			window.render(ground.getTile(i));
+		}
+		window.display();
+		SDL_Delay(16);
 	}
 	return success;
 }
@@ -114,7 +115,7 @@ int main(int argc, char* args[])
 	std::cout << "Start running game.\n";
 	if (init()) {
 		std::cout << "Game init success.\n";
-		if (loadMedia()) {
+		if (Load) {
 			std::cout << "Game load media success.\n";
 			if (runGame()) {
 				std::cout << "Game run success.\n";

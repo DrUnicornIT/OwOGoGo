@@ -1,11 +1,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <vector>
-
 #include "entity.h"
+#include <iostream>
 
 Entity::Entity(float p_x, float p_y, std::vector<SDL_Texture*> p_tex)
-:x(p_x), y(p_y), tex(p_tex)
+	:x(p_x), y(p_y), tex(p_tex)
 {
 	currentFrame.x = 0;
 	currentFrame.y = 0;
@@ -18,7 +18,7 @@ Entity::Entity(float p_x, float p_y, std::vector<SDL_Texture*> p_tex)
 }
 
 Entity::Entity(float p_x, float p_y, SDL_Texture* p_tex)
-:x(p_x), y(p_y)
+	:x(p_x), y(p_y)
 {
 	tex.push_back(p_tex);
 	currentFrame.x = 0;
@@ -49,7 +49,7 @@ int Entity::getWidth()
 int Entity::getHeight()
 {
 	return currentFrame.h;
-}	
+}
 
 int Entity::getSize()
 {
