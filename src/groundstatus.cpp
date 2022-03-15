@@ -4,7 +4,7 @@ const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 480;
 
 GroundStatus::GroundStatus(SDL_Texture* _Texture, int _index)
-    : Entity{ _index * 64.0f, SCREEN_HEIGHT - 128.0f, _Texture }
+    : Entity{ _index * 64.0f,  SCREEN_HEIGHT - 350.0f, _Texture }
 {
     status = 1;
 }

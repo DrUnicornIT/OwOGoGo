@@ -86,8 +86,8 @@ bool runGame()
 
 	SDL_Event event;
 	bool quit = false;
-	float newHeghtGround = SCREEN_HEIGHT - 128.0f;
-	float gravity  = 0.1f;
+	float newHeghtGround = SCREEN_HEIGHT - 350.0f;
+	float gravity = 0.0f;
 
 	while (!quit) {
 		while (SDL_PollEvent(&event) != 0) {
@@ -98,7 +98,7 @@ bool runGame()
 			}
 			}
 		}
-		ground.update(50, newHeghtGround, gravity );
+		ground.update(50, newHeghtGround, gravity);
 		window.clear();
 		/// 0 easy, 50 normal, 100 hard
 
