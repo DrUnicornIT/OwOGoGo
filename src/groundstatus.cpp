@@ -1,10 +1,12 @@
 #include "groundstatus.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 480;
 
-GroundStatus::GroundStatus(SDL_Texture* _Texture, int _index)
-    : Entity{ _index * 64.0f,  SCREEN_HEIGHT - 350.0f, _Texture }
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 800;
+
+
+GroundStatus::GroundStatus(SDL_Texture* _Texture, int _x, int _y)
+    : Entity{ _x,  _y, _Texture }
 {
     status = 1;
 }

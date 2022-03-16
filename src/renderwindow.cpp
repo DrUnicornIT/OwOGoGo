@@ -6,8 +6,10 @@
 #include "renderwindow.h"
 #include "entity.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 480;
+
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 800;
+
 
 RenderWindow::RenderWindow()
 {

@@ -8,19 +8,66 @@
 #include "ground.h"
 #include "groundstatus.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 480;
 
-Ground::Ground(SDL_Texture* left, SDL_Texture* center, SDL_Texture* right, SDL_Texture* hole)
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 800;
+const int LEN = 14;
+
+int randInt(int l, int r) {
+    return rand() % (r - l + 1) + l;
+}
+
+int previous(int i) {
+    if (i == 0) {
+        return LEN - 1;
+    }
+    return i - 1;
+}
+
+float randFloat(float L, float R) {
+    return (R - L) * ((float)rand() / (float)RAND_MAX) + L;
+}
+
+const float LimitBottom = SCREEN_HEIGHT - 250.0f;
+const float LimitUp = SCREEN_HEIGHT - 650.0f;
+
+Ground::Ground(SDL_Texture* _short, SDL_Texture* _medium, SDL_Texture* _long, SDL_Texture* hole)
 {
-    groundTexture[0] = left;
-    groundTexture[1] = center;
-    groundTexture[2] = right;
+    groundTexture[0] = _short;
+    groundTexture[1] = _medium;
+    groundTexture[2] = _long;
     groundTexture[3] = hole;
-
-    for (int i = 0; i < 14; i++)
+    float start_x = 0;
+    int nonHole = 0;
+    int numHoles = 0;
+    bool statusPre = 0;
+    for (int i = 0; i < LEN; i++)
     {
-        groundTiles.push_back(GroundStatus(groundTexture[1], i));
+        if (statusPre) {
+            groundTiles.push_back(GroundStatus(groundTexture[3], start_x, randFloat(LimitBottom, LimitUp)));
+            start_x += groundTiles[i].getWidth();
+            std::cout << "start_x: " << start_x << '\n';
+            numHoles++;
+            statusPre = 0;
+            continue;
+        }
+        groundTiles.push_back(GroundStatus(groundTexture[randInt(0, 3 - nonHole)], start_x, randFloat(LimitBottom, LimitUp)));
+        if (groundTiles[i].getStatus() == 3) {
+            numHoles++;
+            statusPre = 0;
+        }
+        else {
+            numHoles = 0;
+            statusPre = 1;
+        }
+        if (numHoles == 2) {
+            nonHole = 1;
+        }
+        else {
+            nonHole = 0;
+        }
+        start_x += groundTiles[i].getWidth();
+        std::cout << "start_x: " << start_x << '\n';
     }
 }
 
@@ -39,86 +86,19 @@ int Ground::getLength()
     return groundTiles.size();
 }
 
-void Ground::reset()
-{
-    for (int i = 0; i < 20; i++)
-    {
-        groundTiles[i].setStatus(1, groundTexture);
-        groundTiles[i].setX(i * 64.0f);
-    }
-    lastStatus = 1;
-    holeCount = 0;
-}
-
 void Ground::update(int score, float& newHeghtGround, float& gravity)
 {
-    float HeightMax = 0.0f;
-    gravity = 0.3f;
-    for (int i = 0; i < getLength(); i++)
-    {
-        groundTiles[i].setX(groundTiles[i].getX() - 2.2f);
-        groundTiles[i].setY(groundTiles[i].getY() + gravity);
-        // printf("%d\n", i);
+    for (int i = 0; i < getLength(); i++) {
+        groundTiles[i].setX(groundTiles[i].getX() - 3.5f);
+        std::cout << "groundTiles[i].getX(): " << groundTiles[i].getX() << '\n';
+        if (groundTiles[i].getY() == SCREEN_HEIGHT)
+            groundTiles[i].setY(randFloat(LimitBottom, LimitUp));
 
-        if (groundTiles[i].getX() + 64 < 0)
-        {
-            groundTiles[i].setX(64 * (getLength() - 1) - 1);
-            groundTiles[i].setY(newHeghtGround);
-            switch (lastStatus)
-            {
-            case 0:
-            {
-                groundTiles[i].setStatus(1, groundTexture);
-                lastStatus = 1;
-                holeCount = 0;
-                break;
-            }
-            case 1:
-            {
-                int randomInt = rand() % 2 + 1;
-                groundTiles[i].setStatus(randomInt, groundTexture);
-                lastStatus = randomInt;
-                holeCount = 0;
-                break;
-            }
-            case 2:
-            {
-                newHeghtGround = SCREEN_HEIGHT - 350.0f;
-                groundTiles[i].setStatus(3, groundTexture);
-                lastStatus = 3;
-                holeCount = 0;
-                break;
-            }
-            case 3:
-            {
-                int randomInt = rand() % 2;
-                if (randomInt == 1)
-                {
-                    randomInt = 3;
-                    holeCount++;
-                }
-                else
-                {
-                    holeCount = 0;
-                }
-                if (holeCount >= 2)
-                {
-                    randomInt = 0;
-                    holeCount = 0;
-                }
-                groundTiles[i].setStatus(randomInt, groundTexture);
-                lastStatus = randomInt;
-                break;
-            }
-            }
+        if (groundTiles[i].getX() + groundTiles[i].getWidth() < 0) {
+            // std::cout << "." << '\n';
+            groundTiles[i].setX(groundTiles[previous(i)].getX() + groundTiles[previous(i)].getWidth());
+            // std::cout << "new X" << previous(i) << " " << groundTiles[previous(i)].getX() << " " << groundTiles[i].getX() << '\n';
+            groundTiles[i].setY(SCREEN_HEIGHT);
         }
-    }
-    for (int i = 1; i < getLength(); i++) {
-        if (((getStatus(i - 1) == 0 && getStatus(i) == 1) || (getStatus(i - 1) == 1 && getStatus(i) == 1) || (getStatus(i - 1) == 1 && getStatus(i) == 2)) && groundTiles[i].getX() > groundTiles[i - 1].getX()) {
-            groundTiles[i].setY(groundTiles[i - 1].getY());
-        }
-    }
-    if (((getStatus(getLength() - 1) == 0 && getStatus(0) == 1) || (getStatus(getLength() - 1) == 1 && getStatus(0) == 1) || (getStatus(getLength() - 1) == 1 && getStatus(0) == 2)) && groundTiles[0].getX() > groundTiles[getLength() - 1].getX()) {
-        groundTiles[0].setY(groundTiles[getLength() - 1].getY());
     }
 }

@@ -11,8 +11,9 @@
 #include "renderwindow.h"
 #include "ground.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 800;
+
 
 bool init();
 bool loadMedia();
@@ -65,13 +66,13 @@ bool loadMedia()
 	bool success = true;
 	window.create("OwOGoGo", SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	groundTexture[0] = window.loadTexture("img/left.png");
+	groundTexture[0] = window.loadTexture("img/short.png");
 	if (groundTexture[0] == NULL) {
 		printf("Failed to load left texture!\n");
 		success = false;
 	}
-	groundTexture[1] = window.loadTexture("img/center.png");
-	groundTexture[2] = window.loadTexture("img/right.png");
+	groundTexture[1] = window.loadTexture("img/medium.png");
+	groundTexture[2] = window.loadTexture("img/long.png");
 	groundTexture[3] = window.loadTexture("img/hole.png");
 	return success;
 }

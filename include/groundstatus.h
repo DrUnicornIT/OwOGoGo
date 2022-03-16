@@ -9,7 +9,7 @@ class GroundStatus
 : public Entity
 {
 public:
-	GroundStatus(SDL_Texture* p_tex, int p_index);
+	GroundStatus(SDL_Texture* _Texture, int _x, int _y);
 	int getStatus();
 	void setStatus(int p_status, SDL_Texture* groundTex[4]);
 private:
