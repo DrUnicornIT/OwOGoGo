@@ -115,7 +115,7 @@ bool runGame()
 
 int main(int argc, char* args[])
 {
-
+	srand((unsigned)time(0));
 	std::cout << "Start running game.\n";
 	if (init()) {
 		std::cout << "Game init success.\n";
