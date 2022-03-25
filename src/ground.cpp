@@ -43,11 +43,13 @@ Ground::Ground(SDL_Texture* _short, SDL_Texture* _medium, SDL_Texture* _long, SD
     int numHoles = 0;
     bool statusPre = 1;
     groundTiles.push_back(GroundStatus(groundTexture[2], start_x, LimitBottom));
+    groundTiles[0].setStatus(2, groundTexture);
     start_x += groundTiles[0].getWidth();
     for (int i = 1; i < LEN; i++)
     {
         if (statusPre) {
             groundTiles.push_back(GroundStatus(groundTexture[3], start_x, randFloat(LimitBottom, LimitUp)));
+            groundTiles[0].setStatus(3, groundTexture);
             start_x += groundTiles[i].getWidth();
             numHoles++;
             statusPre = 0;
@@ -59,7 +61,9 @@ Ground::Ground(SDL_Texture* _short, SDL_Texture* _medium, SDL_Texture* _long, SD
             }
             continue;
         }
-        groundTiles.push_back(GroundStatus(groundTexture[randInt(0, 3 - nonHole)], start_x, randFloat(LimitBottom, LimitUp)));
+        int randII = randInt(0, 3 - nonHole);
+        groundTiles.push_back(GroundStatus(groundTexture[randII], start_x, randFloat(LimitBottom, LimitUp)));
+        groundTiles[0].setStatus(2, groundTexture);
         if (groundTiles[i].getStatus() == 3) {
             numHoles++;
             statusPre = 0;
@@ -93,11 +97,40 @@ int Ground::getLength()
     return groundTiles.size();
 }
 
+bool Ground::isTileBelow(float x, int width)
+{
+    for (int i = 0; i < getLength(); i++)
+    {
+        switch (getStatus(i)) {
+        case 0:
+            if (x + width > groundTiles[i].getX() + 24 && x < groundTiles[i].getX() + 64)
+            {
+                return true;
+            }
+            break;
+        case 1:
+            if (x + width > groundTiles[i].getX() && x < groundTiles[i].getX() + 64)
+            {
+                return true;
+            }
+            break;
+        case 2:
+            if (x + width > groundTiles[i].getX() && x < groundTiles[i].getX() + 40)
+            {
+                return true;
+            }
+            break;
+        }
+    }
+    return false;
+}
+
 void Ground::update(int score, float& newHeghtGround, float& gravity)
 {
 
     for (int i = 0; i < getLength(); i++) {
-        groundTiles[i].setX(groundTiles[i].getX() - 3.5f);
+        /// - 3.5f
+        groundTiles[i].setX(groundTiles[i].getX() - 3.5);
         if (groundTiles[i].getY() == SCREEN_HEIGHT)
             groundTiles[i].setY(randFloat(LimitBottom, LimitUp));
 
@@ -105,5 +138,6 @@ void Ground::update(int score, float& newHeghtGround, float& gravity)
             groundTiles[i].setX(groundTiles[previous(i)].getX() + groundTiles[previous(i)].getWidth());
             groundTiles[i].setY(SCREEN_HEIGHT);
         }
+        
     }
 }

@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -14,6 +16,7 @@ public:
 	RenderWindow();
 	void create(const char* p_title, int p_w, int p_h);
 	SDL_Texture* loadTexture(const char* p_filePath);
+	SDL_Texture* loadTexture(const std::string str);
 	void clear();
 	void render(Entity& p_entity);
 	void render(float p_x, float p_y, SDL_Texture* p_tex);

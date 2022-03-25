@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <iostream>
+#include <string>
 
 #include "renderwindow.h"
 #include "entity.h"
@@ -26,6 +27,18 @@ void RenderWindow::create(const char* p_title, int p_w, int p_h)
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
+SDL_Texture* RenderWindow::loadTexture(const std::string str)
+{
+	char* p_filePath = new char[str.length() + 1];
+	strcpy(p_filePath, str.c_str());
+	SDL_Texture* texture = NULL;
+	texture = IMG_LoadTexture(renderer, p_filePath);
+
+	if (texture == NULL)
+		std::cout << "___Failed to load texture. Error: " << SDL_GetError() << std::endl;
+
+	return texture;
+}
 
 SDL_Texture* RenderWindow::loadTexture(const char* p_filePath)
 {
@@ -33,7 +46,7 @@ SDL_Texture* RenderWindow::loadTexture(const char* p_filePath)
 	texture = IMG_LoadTexture(renderer, p_filePath);
 
 	if (texture == NULL)
-		std::cout << "Failed to load texture. Error: " << SDL_GetError() << std::endl;
+		std::cout << "__Failed to load texture. Error: " << SDL_GetError() << std::endl;
 
 	return texture;
 }
