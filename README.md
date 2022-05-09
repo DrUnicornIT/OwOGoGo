@@ -22,21 +22,28 @@
 
 ### Technologies and Technical Challenges
 
-#### Technologies
-
-- SDL2
-- C++
+- SDL2 mingw
+- SDL2 ttf
+- SDL2 mix
+- SDL2 net
+- SDL2 image
+- OpenGL
+- C/C++;
 
 ### Implementation Timeline
 
-- [x] Production README
-- [x] Code main
-- [x] Code ground infinity
-- [x] Items
-- [ ] Img art and charater
+- [x] Prodution README
+- [x] Code main.
+- [x] Code UI.
+- [x] AI for enermies.
+- [x] Code ground infinity.
+- [x] Items,
+- [x] Random map -> level.
+- [x] Network - LanGame for 2 player.
+- [x] Img art and charater
 
 ## Play the game
 
-    WSAD
+    WSAD: To moving player -> like snaker
 
 ## Enjoy the game
