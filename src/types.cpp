@@ -16,10 +16,10 @@
 extern LinkList animationsList[];
 extern TTF_Font* font;
 extern SDL_Renderer* renderer;
-SDL_Color BLACK = {0, 0, 0, 255};
-SDL_Color WHITE = {255, 255, 255, 255};
+SDL_Color BLACK = { 0, 0, 0, 255 };
+SDL_Color WHITE = { 255, 255, 255, 255 };
 void initTexture(Texture* self, SDL_Texture* origin, int width, int height,
-                 int frames) {
+  int frames) {
   self->origin = origin;
   self->width = width;
   self->height = height;
@@ -37,21 +37,21 @@ void destroyTexture(Texture* self) {
 bool initText(Text* self, const char* str, SDL_Color color) {
   self->color = color;
   strcpy(self->text, str);
-  // Render text surface
   SDL_Surface* textSurface = TTF_RenderText_Solid(font, str, color);
   if (textSurface == NULL) {
     printf("Unable to render text surface! SDL_ttf Error: %s\n",
-           TTF_GetError());
-  } else {
-    // Create texture from surface pixels
+      TTF_GetError());
+  }
+  else {
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, textSurface);
     self->width = textSurface->w;
     self->height = textSurface->h;
     SDL_FreeSurface(textSurface);
     if (texture == NULL) {
       printf("Unable to create texture from rendered text! SDL Error: %s\n",
-             SDL_GetError());
-    } else {
+        SDL_GetError());
+    }
+    else {
       self->origin = texture;
       return true;
     }
@@ -59,7 +59,7 @@ bool initText(Text* self, const char* str, SDL_Color color) {
   return false;
 }
 Text* createText(const char* str, SDL_Color color) {
-  Text* self = (Text*) malloc(sizeof(Text));
+  Text* self = (Text*)malloc(sizeof(Text));
   initText(self, str, color);
   return self;
 }
@@ -93,14 +93,14 @@ void destroyEffect(Effect* self) {
 }
 
 void initAnimation(Animation* self, Texture* origin, const Effect* effect,
-                   LoopType lp, int duration, int x, int y,
-                   SDL_RendererFlip flip, double angle, At at) {
-  // will deep copy effect
+  LoopType lp, int duration, int x, int y,
+  SDL_RendererFlip flip, double angle, At at) {
   self->origin = origin;
   if (effect) {
     self->effect = (Effect*)malloc(sizeof(Effect));
     copyEffect(effect, self->effect);
-  } else {
+  }
+  else {
     self->effect = NULL;
   }
   self->lp = lp;
@@ -117,9 +117,9 @@ void initAnimation(Animation* self, Texture* origin, const Effect* effect,
   self->lifeSpan = duration;
 }
 Animation* createAnimation(Texture* origin, const Effect* effect, LoopType lp,
-                           int duration, int x, int y, SDL_RendererFlip flip,
-                           double angle, At at) {
-  Animation* self = (Animation*) malloc(sizeof(Animation));
+  int duration, int x, int y, SDL_RendererFlip flip,
+  double angle, At at) {
+  Animation* self = (Animation*)malloc(sizeof(Animation));
   initAnimation(self, origin, effect, lp, duration, x, y, flip, angle, at);
   return self;
 }
@@ -130,14 +130,14 @@ void destroyAnimation(Animation* self) {
 void copyAnimation(Animation* src, Animation* dest) {
   memcpy(dest, src, sizeof(Animation));
   if (src->effect) {
-    dest->effect = (Effect*) malloc(sizeof(Effect));
+    dest->effect = (Effect*)malloc(sizeof(Effect));
     copyEffect(src->effect, dest->effect);
   }
 }
 
 void initLinkNode(LinkNode* self) {
   self->nxt = NULL;
-  self->pre = NULL; 
+  self->pre = NULL;
   self->element = NULL;
 }
 LinkNode* createLinkNode(void* element) {
@@ -155,7 +155,8 @@ LinkList* createLinkList() {
 void pushLinkNodeAtHead(LinkList* list, LinkNode* node) {
   if (list->head == NULL) {
     list->head = list->tail = node;
-  } else {
+  }
+  else {
     node->nxt = list->head;
     list->head->pre = node;
     list->head = node;
@@ -164,7 +165,8 @@ void pushLinkNodeAtHead(LinkList* list, LinkNode* node) {
 void pushLinkNode(LinkList* list, LinkNode* node) {
   if (list->head == NULL) {
     list->head = list->tail = node;
-  } else {
+  }
+  else {
     list->tail->nxt = node;
     node->pre = list->tail;
 
@@ -174,25 +176,27 @@ void pushLinkNode(LinkList* list, LinkNode* node) {
 void removeLinkNode(LinkList* list, LinkNode* node) {
   if (node->pre) {
     node->pre->nxt = node->nxt;
-  } else {
+  }
+  else {
     list->head = node->nxt;
   }
   if (node->nxt) {
     node->nxt->pre = node->pre;
-  } else {
+  }
+  else {
     list->tail = node->pre;
   }
   free(node);
 }
 void destroyLinkList(LinkList* self) {
-  for (LinkNode *p = self->head, *nxt; p; p = nxt) {
+  for (LinkNode* p = self->head, *nxt; p; p = nxt) {
     nxt = p->nxt;
     free(p);
   }
   free(self);
 }
 void destroyAnimationsByLinkList(LinkList* list) {
-  for (LinkNode *p = list->head, *nxt; p; p = nxt) {
+  for (LinkNode* p = list->head, *nxt; p; p = nxt) {
     nxt = p->nxt;
     destroyAnimation((Animation*)p->element);
     removeLinkNode(list, p);
@@ -207,20 +211,20 @@ void removeAnimationFromLinkList(LinkList* self, Animation* ani) {
     }
 }
 void changeSpriteDirection(LinkNode* self, Direction newDirection) {
-  Sprite* sprite = (Sprite*) self->element;
+  Sprite* sprite = (Sprite*)self->element;
   if (sprite->direction == (1 ^ newDirection)) return;
   sprite->direction = newDirection;
   if (newDirection == LEFT || newDirection == RIGHT)
     sprite->face = newDirection;
   if (self->nxt) {
     Sprite* nextSprite = (Sprite*)self->nxt->element;
-    PositionBufferSlot slot = {sprite->x, sprite->y, sprite->direction};
+    PositionBufferSlot slot = { sprite->x, sprite->y, sprite->direction };
     pushToPositionBuffer(&nextSprite->posBuffer, slot);
   }
 }
 void initScore(Score* score) { memset(score, 0, sizeof(Score)); }
 Score* createScore() {
-  Score* score = (Score*) malloc(sizeof(Score));
+  Score* score = (Score*)malloc(sizeof(Score));
   initScore(score);
   return score;
 }
@@ -232,8 +236,8 @@ void calcScore(Score* self) {
   }
   extern int gameLevel;
   self->rank = (double)self->damage / self->got +
-               (double)self->stand / self->got + self->got * 50 +
-               self->killed * 100;
+    (double)self->stand / self->got + self->got * 50 +
+    self->killed * 100;
   self->rank *= gameLevel + 1;
 }
 void addScore(Score* a, Score* b) {

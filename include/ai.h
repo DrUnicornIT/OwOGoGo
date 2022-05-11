@@ -7,6 +7,7 @@
 #define AI_PATH_RANDOM 0.01
 #define AI_PREDICT_STEPS 38
 #define AI_DECIDE_RATE 4
+
 typedef struct {
   int value;
   Direction direction;

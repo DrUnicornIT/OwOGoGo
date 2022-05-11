@@ -3,9 +3,9 @@
 #include "helper.h"
 
 Bullet* createBullet(Snake* owner, Weapon* parent, int x, int y, double rad,
-                     int team, Animation* ani) {
+  int team, Animation* ani) {
   Bullet* bullet = (Bullet*)malloc(sizeof(Bullet));
-  *bullet = (Bullet){parent, x, y, team, owner, rad, (Animation*)malloc(sizeof(Animation))};
+  *bullet = (Bullet){ parent, x, y, team, owner, rad, (Animation*)malloc(sizeof(Animation)) };
   copyAnimation(ani, bullet->ani);
   bullet->ani->x = x;
   bullet->ani->y = y;

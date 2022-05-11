@@ -6,16 +6,14 @@
 #include "render.h"
 #include "res.h"
 #include "types.h"
-#ifdef DBG
-#include <assert.h>
-#endif
+
 extern const int n, m;
 extern Texture textures[];
 extern Block map[MAP_SIZE][MAP_SIZE];
 extern LinkList animationsList[];
 
 const double MAP_HOW_OLD = 0.05;
-const double MAP_WALL_HOW_DECORATED = 0.1;// this will take effect in pushMaptoRender in game.c
+const double MAP_WALL_HOW_DECORATED = 0.1;
 
 bool isTrap[MAP_SIZE][MAP_SIZE];
 bool primMap[MAP_SIZE][MAP_SIZE];
@@ -98,7 +96,7 @@ void initPrimMap(double floorPercent, int smoothTimes) {
   while (smoothTimes--) {
     cellularAutomata();
 #ifdef DBG
-// printMap(n, m);
+    // printMap(n, m);
 #endif
   }
 }
@@ -110,14 +108,16 @@ void initBlock(Block* self, BlockType bp, int x, int y, int bid, bool enable) {
   self->enable = enable;
   if (bp == BLOCK_TRAP) {
     self->ani = createAnimation(
-        &textures[enable ? RES_FLOOR_SPIKE_ENABLED : RES_FLOOR_SPIKE_DISABLED],
-        NULL, LOOP_INFI, 1, x, y, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
-  } else if (bp == BLOCK_EXIT) {
+      &textures[enable ? RES_FLOOR_SPIKE_ENABLED : RES_FLOOR_SPIKE_DISABLED],
+      NULL, LOOP_INFI, 1, x, y, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+  }
+  else if (bp == BLOCK_EXIT) {
     self->ani = createAnimation(&textures[enable ? RES_FLOOR_EXIT : RES_FLOOR_2], NULL,
-                  LOOP_INFI, 1, x, y, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
-  } else {
+      LOOP_INFI, 1, x, y, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+  }
+  else {
     self->ani = createAnimation(&textures[bid], NULL, LOOP_INFI, 1, x, y, SDL_FLIP_NONE,
-                  0, AT_TOP_LEFT);
+      0, AT_TOP_LEFT);
   }
 }
 void initMap() {
@@ -127,11 +127,11 @@ void initMap() {
       if ((i != exitX || j != exitY) && hasMap[i][j]) {
         if (isTrap[i][j])
           initBlock(&map[i][j], BLOCK_TRAP, i * UNIT, j * UNIT,
-                    RES_FLOOR_SPIKE_DISABLED,
-                    false);  // textureID does not matter
+            RES_FLOOR_SPIKE_DISABLED,
+            false);  // textureID does not matter
         else
           initBlock(&map[i][j], BLOCK_FLOOR, i * UNIT, j * UNIT, RES_FLOOR_1,
-                    true);
+            true);
       }
     }
 }
@@ -141,30 +141,30 @@ void decorateMap() {
     do {
       x = randInt(0, n - 2), y = randInt(0, m - 2);
     } while ((hasMap[x][y] && !isTrap[x][y]) +
-                 (hasMap[x + 1][y] && !isTrap[x + 1][y]) +
-                 (hasMap[x][y + 1] && !isTrap[x][y + 1]) +
-                 (hasMap[x + 1][y + 1] && !isTrap[x + 1][y + 1]) <
-             4);
+      (hasMap[x + 1][y] && !isTrap[x + 1][y]) +
+      (hasMap[x][y + 1] && !isTrap[x][y + 1]) +
+      (hasMap[x + 1][y + 1] && !isTrap[x + 1][y + 1]) <
+      4);
     if (randDouble() < MAP_HOW_OLD) {
       map[x][y].ani->origin = &textures[RES_FLOOR_6];
-      map[x+1][y].ani->origin = &textures[RES_FLOOR_4];
-      map[x+1][y+1].ani->origin = &textures[RES_FLOOR_8];
-      map[x][y+1].ani->origin = &textures[RES_FLOOR_7];
+      map[x + 1][y].ani->origin = &textures[RES_FLOOR_4];
+      map[x + 1][y + 1].ani->origin = &textures[RES_FLOOR_8];
+      map[x][y + 1].ani->origin = &textures[RES_FLOOR_7];
     }
     else {
       map[x][y].ani->origin = &textures[RES_FLOOR_2];
-      map[x][y+1].ani->origin = &textures[RES_FLOOR_5];
-      map[x+1][y].ani->origin = &textures[RES_FLOOR_3];
+      map[x][y + 1].ani->origin = &textures[RES_FLOOR_5];
+      map[x + 1][y].ani->origin = &textures[RES_FLOOR_3];
     }
   }
 }
 void initBlankMap(int w, int h) {
   clearMapGenerator();
-  int si = n/2 - w/2, sj = m/2 - h/2;
+  int si = n / 2 - w / 2, sj = m / 2 - h / 2;
   for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) {
     int ii = si + i, jj = sj + j;
     hasMap[ii][jj] = 1;
-    initBlock(&map[ii][jj], BLOCK_FLOOR, ii*UNIT, jj*UNIT, RES_FLOOR_1, false);
+    initBlock(&map[ii][jj], BLOCK_FLOOR, ii * UNIT, jj * UNIT, RES_FLOOR_1, false);
   }
 }
 void initRandomMap(double floorPercent, int smoothTimes, double trapRate) {
@@ -176,7 +176,7 @@ void initRandomMap(double floorPercent, int smoothTimes, double trapRate) {
     for (int j = 0; j < mm; j++) {
       if (primMap[i][j])
         hasMap[i * 2][j * 2] = hasMap[i * 2 + 1][j * 2] =
-            hasMap[i * 2][j * 2 + 1] = hasMap[2 * i + 1][2 * j + 1] = 1;
+        hasMap[i * 2][j * 2 + 1] = hasMap[2 * i + 1][2 * j + 1] = 1;
     }
   }
 #ifdef DBG
@@ -187,7 +187,7 @@ void initRandomMap(double floorPercent, int smoothTimes, double trapRate) {
     do {
       x = randInt(0, n - 2), y = randInt(0, m - 2);
     } while ((hasMap[x][y] + hasMap[x + 1][y] + hasMap[x][y + 1] +
-              hasMap[x + 1][y + 1]) <= 1);
+      hasMap[x + 1][y + 1]) <= 1);
     isTrap[x][y] = 1;
     if (hasMap[x + 1][y]) isTrap[x + 1][y] = 1;
     if (hasMap[x][y + 1]) isTrap[x][y + 1] = 1;
@@ -197,7 +197,7 @@ void initRandomMap(double floorPercent, int smoothTimes, double trapRate) {
     exitX = randInt(0, n - 1), exitY = randInt(0, m - 1);
   } while (!(hasMap[exitX][exitY] && !isTrap[exitX][exitY]));
   initBlock(&map[exitX][exitY], BLOCK_EXIT, exitX * UNIT, exitY * UNIT,
-            RES_FLOOR_EXIT, false);
+    RES_FLOOR_EXIT, false);
 #ifdef DBG
   printf("exit: %d %d\n", exitX, exitY);
 #endif
@@ -213,59 +213,63 @@ void pushMapToRender() {
         if (inr(j + 1, 0, m - 1) && hasMap[i][j + 1]) {
           if (inr(i + 1, 0, n - 1) && hasMap[i + 1][j]) {
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_CORNER_FRONT_RIGHT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, j * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_CORNER_FRONT_RIGHT], NULL,
+              LOOP_INFI, 1, i * UNIT, j * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_CORNER_BOTTOM_RIGHT],
-                                   NULL, LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
-          } else if (inr(i - 1, 0, n - 1) && hasMap[i - 1][j]) {
+              &textures[RES_WALL_CORNER_BOTTOM_RIGHT],
+              NULL, LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+          }
+          else if (inr(i - 1, 0, n - 1) && hasMap[i - 1][j]) {
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_CORNER_FRONT_LEFT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, j * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_CORNER_FRONT_LEFT], NULL,
+              LOOP_INFI, 1, i * UNIT, j * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_CORNER_BOTTOM_LEFT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
-          } else {
+              &textures[RES_WALL_CORNER_BOTTOM_LEFT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+          }
+          else {
             int bid = randDouble() < MAP_HOW_OLD * 5
-                          ? (RES_WALL_HOLE_1 + randInt(0, 1))
-                          : RES_WALL_MID;
+              ? (RES_WALL_HOLE_1 + randInt(0, 1))
+              : RES_WALL_MID;
             if (randDouble() < MAP_WALL_HOW_DECORATED)
               bid = RES_WALL_BANNER_RED + randInt(0, 3);
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[bid], NULL, LOOP_INFI, 1, i * UNIT,
-                                   j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[bid], NULL, LOOP_INFI, 1, i * UNIT,
+              j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_TOP_MID], NULL, LOOP_INFI,
-                                   1, i * UNIT, (j - 1) * UNIT, SDL_FLIP_NONE,
-                                   0, AT_TOP_LEFT);
+              &textures[RES_WALL_TOP_MID], NULL, LOOP_INFI,
+              1, i * UNIT, (j - 1) * UNIT, SDL_FLIP_NONE,
+              0, AT_TOP_LEFT);
           }
         }
         if (inr(j - 1, 0, m - 1) && hasMap[i][j - 1]) {
           int bid = randDouble() < MAP_HOW_OLD * 2
-                        ? (RES_WALL_HOLE_1 + randInt(0, 1))
-                        : RES_WALL_MID;
+            ? (RES_WALL_HOLE_1 + randInt(0, 1))
+            : RES_WALL_MID;
           createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                 &textures[bid], NULL, LOOP_INFI, 1, i * UNIT,
-                                 j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+            &textures[bid], NULL, LOOP_INFI, 1, i * UNIT,
+            j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           if (hasMap[i - 1][j]) {
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_FOREWALL],
-                                   &textures[RES_WALL_CORNER_TOP_LEFT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
-          } else if (hasMap[i + 1][j]) {
+              &textures[RES_WALL_CORNER_TOP_LEFT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+          }
+          else if (hasMap[i + 1][j]) {
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_FOREWALL],
-                                   &textures[RES_WALL_CORNER_TOP_RIGHT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
-          } else {
+              &textures[RES_WALL_CORNER_TOP_RIGHT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+          }
+          else {
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_FOREWALL],
-                                   &textures[RES_WALL_TOP_MID], NULL, LOOP_INFI,
-                                   1, i * UNIT, (j - 1) * UNIT, SDL_FLIP_NONE,
-                                   0, AT_TOP_LEFT);
+              &textures[RES_WALL_TOP_MID], NULL, LOOP_INFI,
+              1, i * UNIT, (j - 1) * UNIT, SDL_FLIP_NONE,
+              0, AT_TOP_LEFT);
           }
         }
         if (inr(i + 1, 0, n - 1) && hasMap[i + 1][j]) {
@@ -273,23 +277,23 @@ void pushMapToRender() {
             ;  // just do not render
           else
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_MID_LEFT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, j * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_MID_LEFT], NULL,
+              LOOP_INFI, 1, i * UNIT, j * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           if (!hasMap[i + 1][j + 1])
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_FRONT_LEFT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j + 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_FRONT_LEFT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j + 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           if (!hasMap[i + 1][j - 1]) {
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_MID_LEFT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_MID_LEFT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_TOP_LEFT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j - 2) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_TOP_LEFT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j - 2) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           }
         }
         if (inr(i - 1, 0, n - 1) && hasMap[i - 1][j]) {
@@ -297,23 +301,23 @@ void pushMapToRender() {
             ;  // do not render
           else
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_MID_RIGHT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, j * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_MID_RIGHT], NULL,
+              LOOP_INFI, 1, i * UNIT, j * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           if (!hasMap[i - 1][j + 1])
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_FRONT_RIGHT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j + 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_FRONT_RIGHT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j + 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           if (!hasMap[i - 1][j - 1]) {
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_MID_RIGHT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_MID_RIGHT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j - 1) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
             createAndPushAnimation(&animationsList[RENDER_LIST_MAP_ID],
-                                   &textures[RES_WALL_SIDE_TOP_RIGHT], NULL,
-                                   LOOP_INFI, 1, i * UNIT, (j - 2) * UNIT,
-                                   SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+              &textures[RES_WALL_SIDE_TOP_RIGHT], NULL,
+              LOOP_INFI, 1, i * UNIT, (j - 2) * UNIT,
+              SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           }
         }
       }

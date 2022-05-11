@@ -29,7 +29,7 @@ int trapVerdict(Sprite* sprite) {
       if (inr(xx, 0, n - 1) && inr(yy, 0, m - 1)) {
         block = getMapRect(xx, yy);
         if (RectRectCross(&box, &block) && hasMap[xx][yy] &&
-            map[xx][yy].bp == BLOCK_TRAP) {
+          map[xx][yy].bp == BLOCK_TRAP) {
           ret += map[xx][yy].enable + 1;
         }
       }
@@ -45,12 +45,13 @@ int getPowerfulPlayer() {
       maxNum = num;
       mxCount = 1;
       id = i;
-    } else if (num == maxNum)
+    }
+    else if (num == maxNum)
       mxCount++;
   }
   return id != -1 && mxCount == 1
-             ? (spriteSnake[id]->num >= AI_LOCK_LIMIT ? id : -1)
-             : -1;
+    ? (spriteSnake[id]->num >= AI_LOCK_LIMIT ? id : -1)
+    : -1;
 }
 
 int balanceVerdict(Sprite* sprite, int id) {
@@ -86,7 +87,7 @@ int testOneMove(Snake* snake, Direction direction) {
 }
 
 int compareChoiceByValue(const Choice* x, const Choice* y) {
-  const Choice *a = x, *b = y;
+  const Choice* a = x, * b = y;
   return b->value - a->value;
 }
 
@@ -101,8 +102,8 @@ void AiInput(Snake* snake) {
     int count = 0;
     for (int i = LEFT; i <= DOWN; i++)
       if (i != currentDirection && (i ^ 1) != currentDirection) {
-        int value = testOneMove(snake, (Direction) i);
-        if (value >= originValue) choices[count++] = (Choice){value,(Direction) i};
+        int value = testOneMove(snake, (Direction)i);
+        if (value >= originValue) choices[count++] = (Choice){ value,(Direction)i };
       }
     if (count) {
       int maxValue = choices[0].value;
@@ -115,7 +116,7 @@ void AiInput(Snake* snake) {
       }
       if (maxValue > originValue)
         changeSpriteDirection(snake->sprites->head,
-                              choices[nowChoice].direction);
+          choices[nowChoice].direction);
     }
   }
 }

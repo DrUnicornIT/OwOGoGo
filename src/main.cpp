@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+<<<<<< < HEAD
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,28 +8,28 @@
 #include "ui.h"
 #include "prng.h"
 
-int main(int argc, char **args)
+	int main(int argc, char** args)
 {
-  prngSrand(time(NULL));
-  if (!init())
-  {
-    printf("Failed to initialize!\n");
-  }
-  else
-  {
-    // Load media
-    if (!loadMedia())
-    {
-      printf("Failed to load media!\n");
-    }
-    else
-    {
-      mainUi();
-    }
-  }
-  cleanup();
+	prngSrand(time(NULL));
+	if (!init())
+	{
+		printf("Failed to initialize!\n");
+	}
+	else
+	{
+		// Load media
+		if (!loadMedia())
+		{
+			printf("Failed to load media!\n");
+		}
+		else
+		{
+			mainUi();
+		}
+	}
+	cleanup();
 }
-=======
+====== =
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -129,4 +129,4 @@ int main(int argc, char* args[])
 	}
 	return 0;
 }
->>>>>>> dc059530e34e9b213858f7658c53a8821b76204a
+>>>>>> > dc059530e34e9b213858f7658c53a8821b76204a

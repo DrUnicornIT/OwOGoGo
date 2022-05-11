@@ -48,7 +48,7 @@ LinkList* bullets;
 
 int gameLevel, stage;
 int spritesCount, playersCount, flasksCount, herosCount, flasksSetting,
-    herosSetting, spritesSetting, bossSetting;
+herosSetting, spritesSetting, bossSetting;
 // Win
 int GAME_WIN_NUM;
 int termCount;
@@ -79,13 +79,15 @@ void setLevel(int level) {
   AI_LOCK_LIMIT = MAX(1, 7 - level * 2 - stage / 2);
   GAME_WIN_NUM = 10 + level * 5 + stage * 3;
   if (level == 0) {
-  } else if (level == 1) {
+  }
+  else if (level == 1) {
     GAME_DROPOUT_WEAPONS = 0.98;
     herosSetting = 5;
     flasksSetting = 4;
     spritesSetting = 28;
     bossSetting = 3;
-  } else if (level == 2) {
+  }
+  else if (level == 2) {
     GAME_DROPOUT_WEAPONS = 0.98;
     GAME_DROPOUT_YELLOW_FLASKS = 0.3;
     spritesSetting = 28;
@@ -116,8 +118,8 @@ Score** startGame(int localPlayers, int remotePlayers, bool localFirst) {
   return scores;
 }
 void appendSpriteToSnake(
-    Snake* snake, int sprite_id, int x, int y,
-    Direction direcion) {  // x ,y, dir only matter when empty snake
+  Snake* snake, int sprite_id, int x, int y,
+  Direction direcion) {  // x ,y, dir only matter when empty snake
   snake->num++;
   snake->score->got++;
   // at head
@@ -130,8 +132,8 @@ void appendSpriteToSnake(
     snakeHead = (Sprite*)snake->sprites->head->element;
     x = snakeHead->x, y = snakeHead->y;
     int delta = (snakeHead->ani->origin->width * SCALE_FACTOR +
-                 commonSprites[sprite_id].ani->origin->width * SCALE_FACTOR) /
-                2;
+      commonSprites[sprite_id].ani->origin->width * SCALE_FACTOR) /
+      2;
     if (snakeHead->direction == LEFT)
       x -= delta;
     else if (snakeHead->direction == RIGHT)
@@ -163,15 +165,15 @@ void appendSpriteToSnake(
 void initPlayer(int playerType) {
   spritesCount++;
   Snake* p = spriteSnake[playersCount] =
-      createSnake(MOVE_STEP, playersCount, (PlayerType)playerType);
+    createSnake(MOVE_STEP, playersCount, (PlayerType)playerType);
   appendSpriteToSnake(p, SPRITE_KNIGHT, SCREEN_WIDTH / 2,
-                      SCREEN_HEIGHT / 2 + playersCount * 2 * UNIT, RIGHT);
+    SCREEN_HEIGHT / 2 + playersCount * 2 * UNIT, RIGHT);
   playersCount++;
 }
 void generateHeroItem(int x, int y) {
   int heroId = randInt(SPRITE_KNIGHT, SPRITE_LIZARD);
   Animation* ani = (Animation*)malloc(sizeof(Animation));
-  itemMap[x][y] = (Item){ITEM_HERO, heroId, 0, ani};
+  itemMap[x][y] = (Item){ ITEM_HERO, heroId, 0, ani };
   copyAnimation(commonSprites[heroId].ani, ani);
   x *= UNIT, y *= UNIT;
   // TODO:Dangerous
@@ -192,32 +194,37 @@ void generateItem(int x, int y, ItemType type) {
       textureId = RES_ICE_SWORD;
       id = WEAPON_ICE_SWORD;
       belong = SPRITE_KNIGHT;
-    } else if (kind == 1) {
+    }
+    else if (kind == 1) {
       textureId = RES_HOLY_SWORD;
       id = WEAPON_HOLY_SWORD;
       belong = SPRITE_KNIGHT;
-    } else if (kind == 2) {
+    }
+    else if (kind == 2) {
       textureId = RES_THUNDER_STAFF;
       id = WEAPON_THUNDER_STAFF;
       belong = SPRITE_WIZZARD;
-    } else if (kind == 3) {
+    }
+    else if (kind == 3) {
       textureId = RES_PURPLE_STAFF;
       id = WEAPON_PURPLE_STAFF;
       belong = SPRITE_WIZZARD;
-    } else if (kind == 4) {
+    }
+    else if (kind == 4) {
       textureId = RES_GRASS_SWORD;
       id = WEAPON_SOLID_CLAW;
       belong = SPRITE_LIZARD;
-    } else if (kind == 5) {
+    }
+    else if (kind == 5) {
       textureId = RES_POWERFUL_BOW;
       id = WEAPON_POWERFUL_BOW;
       belong = SPRITE_ELF;
     }
   }
   Animation* ani = createAndPushAnimation(
-      &animationsList[RENDER_LIST_MAP_ITEMS_ID], &textures[textureId], NULL,
-      LOOP_INFI, 3, x * UNIT, y * UNIT, SDL_FLIP_NONE, 0, AT_BOTTOM_LEFT);
-  itemMap[x][y] = (Item){type, id, belong, ani};
+    &animationsList[RENDER_LIST_MAP_ITEMS_ID], &textures[textureId], NULL,
+    LOOP_INFI, 3, x * UNIT, y * UNIT, SDL_FLIP_NONE, 0, AT_BOTTOM_LEFT);
+  itemMap[x][y] = (Item){ type, id, belong, ani };
 }
 void takeHpMedcine(Snake* snake, int delta, bool extra) {
   for (LinkNode* p = snake->sprites->head; p; p = p->nxt) {
@@ -227,9 +234,9 @@ void takeHpMedcine(Snake* snake, int delta, bool extra) {
     if (!extra) addHp = MAX(0, MIN(sprite->totalHp - sprite->hp, addHp));
     sprite->hp += addHp;
     Animation* ani = createAndPushAnimation(
-        &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_HP_MED], NULL,
-        LOOP_ONCE, SPRITE_ANIMATION_DURATION, sprite->x, sprite->y,
-        SDL_FLIP_NONE, 0, AT_BOTTOM_CENTER);
+      &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_HP_MED], NULL,
+      LOOP_ONCE, SPRITE_ANIMATION_DURATION, sprite->x, sprite->y,
+      SDL_FLIP_NONE, 0, AT_BOTTOM_CENTER);
     bindAnimationToSprite(ani, sprite, false);
   }
 }
@@ -237,20 +244,20 @@ bool takeWeapon(Snake* snake, Item* weaponItem) {
   Weapon* weapon = &weapons[weaponItem->id];
   bool taken = false;
   for (LinkNode* p = snake->sprites->head; p; p = p->nxt) {
-    Sprite* sprite = (Sprite*) p->element;
+    Sprite* sprite = (Sprite*)p->element;
     if (sprite->ani->origin == commonSprites[weaponItem->belong].ani->origin &&
-        sprite->weapon == commonSprites[weaponItem->belong].weapon) {
+      sprite->weapon == commonSprites[weaponItem->belong].weapon) {
       sprite->weapon = weapon;
       Animation* ani = createAndPushAnimation(
-          &animationsList[RENDER_LIST_EFFECT_ID], weaponItem->ani->origin, NULL,
-          LOOP_INFI, 3, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
-          AT_BOTTOM_CENTER);
+        &animationsList[RENDER_LIST_EFFECT_ID], weaponItem->ani->origin, NULL,
+        LOOP_INFI, 3, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
+        AT_BOTTOM_CENTER);
       bindAnimationToSprite(ani, sprite, true);
       sprite->hp += GAME_HP_MEDICINE_EXTRA_DELTA / 100.0 * sprite->totalHp * 5;
       ani = createAndPushAnimation(&animationsList[RENDER_LIST_EFFECT_ID],
-                                   &textures[RES_HP_MED], NULL, LOOP_ONCE,
-                                   SPRITE_ANIMATION_DURATION, 0, 0,
-                                   SDL_FLIP_NONE, 0, AT_BOTTOM_CENTER);
+        &textures[RES_HP_MED], NULL, LOOP_ONCE,
+        SPRITE_ANIMATION_DURATION, 0, 0,
+        SDL_FLIP_NONE, 0, AT_BOTTOM_CENTER);
       bindAnimationToSprite(ani, sprite, true);
       taken = true;
       break;
@@ -263,7 +270,7 @@ void dropItemNearSprite(Sprite* sprite, ItemType itemType) {
     for (int dy = -1; dy <= 1; dy++) {
       int x = sprite->x / UNIT + dx, y = sprite->y / UNIT + dy;
       if (inr(x, 0, n - 1) && inr(y, 0, m - 1) && hasMap[x][y] &&
-          itemMap[x][y].type == ITEM_NONE) {
+        itemMap[x][y].type == ITEM_NONE) {
         generateItem(x, y, itemType);
       }
       return;
@@ -274,10 +281,10 @@ void generateHeroItemAllMap() {
   do {
     x = randInt(1, n - 2), y = randInt(1, m - 2);
   } while (!hasMap[x][y] || map[x][y].bp != BLOCK_FLOOR ||
-           itemMap[x][y].type != ITEM_NONE ||
-           !hasMap[x - 1][y] + !hasMap[x + 1][y] + !hasMap[x][y + 1] +
-                   !hasMap[x][y - 1] >=
-               1);
+    itemMap[x][y].type != ITEM_NONE ||
+    !hasMap[x - 1][y] + !hasMap[x + 1][y] + !hasMap[x][y + 1] +
+    !hasMap[x][y - 1] >=
+    1);
   generateHeroItem(x, y);
 }
 void clearItemMap() {
@@ -296,27 +303,28 @@ void initItemMap(int hCount, int fCount) {
     do {
       x = randInt(0, n - 1), y = randInt(0, m - 1);
     } while (!hasMap[x][y] || map[x][y].bp != BLOCK_FLOOR ||
-             itemMap[x][y].type != ITEM_NONE);
+      itemMap[x][y].type != ITEM_NONE);
     generateItem(x, y, ITEM_HP_MEDCINE);
     flasksCount++;
   }
 }
 int generateEnemy(int x, int y, int minLen, int maxLen, int minId, int maxId,
-                  int step) {
+  int step) {
   Snake* snake = spriteSnake[spritesCount++] =
-      createSnake(step, GAME_MONSTERS_TEAM, COMPUTER);
+    createSnake(step, GAME_MONSTERS_TEAM, COMPUTER);
   hasEnemy[x][y] = 1;
   bool vertical = randInt(0, 1);
   int len = 1;
   if (vertical) {
     while (inr(y + len, 0, m - 1) && hasMap[x][y + len] &&
-           map[x][y + len].bp == BLOCK_FLOOR &&
-           itemMap[x][y + len].type == ITEM_NONE && !hasEnemy[x][y + len])
+      map[x][y + len].bp == BLOCK_FLOOR &&
+      itemMap[x][y + len].type == ITEM_NONE && !hasEnemy[x][y + len])
       len++;
-  } else {
+  }
+  else {
     while (inr(x + len, 0, n - 1) && hasMap[x + len][y] &&
-           map[x + len][y].bp == BLOCK_FLOOR &&
-           itemMap[x + len][y].type == ITEM_NONE && !hasEnemy[x + len][y])
+      map[x + len][y].bp == BLOCK_FLOOR &&
+      itemMap[x + len][y].type == ITEM_NONE && !hasEnemy[x + len][y])
       len++;
   }
   minLen = MIN(minLen, len);
@@ -342,11 +350,11 @@ Point getAvaliablePos() {
   do {
     x = randInt(0, n - 1), y = randInt(0, m - 1);
   } while (!hasMap[x][y] || map[x][y].bp != BLOCK_FLOOR ||
-           itemMap[x][y].type != ITEM_NONE || hasEnemy[x][y] ||
-           !hasMap[x - 1][y] + !hasMap[x + 1][y] + !hasMap[x][y + 1] +
-                   !hasMap[x][y - 1] >=
-               1);
-  return (Point){x, y};
+    itemMap[x][y].type != ITEM_NONE || hasEnemy[x][y] ||
+    !hasMap[x - 1][y] + !hasMap[x + 1][y] + !hasMap[x][y + 1] +
+    !hasMap[x][y - 1] >=
+    1);
+  return (Point) { x, y };
 }
 void initEnemies(int enemiesCount) {
   memset(hasEnemy, 0, sizeof hasEnemy);
@@ -362,17 +370,21 @@ void initEnemies(int enemiesCount) {
     if (random < 0.3) {
       startId = SPRITE_TINY_ZOMBIE;
       endId = SPRITE_SKELET;
-    } else if (random < 0.4) {
+    }
+    else if (random < 0.4) {
       startId = SPRITE_WOGOL;
       endId = SPRITE_CHROT;
       step = 2;
-    } else if (random < 0.5) {
+    }
+    else if (random < 0.5) {
       startId = SPRITE_ZOMBIE;
       endId = SPRITE_ICE_ZOMBIE;
-    } else if (random < 0.8) {
+    }
+    else if (random < 0.8) {
       startId = SPRITE_MUDDY;
       endId = SPRITE_SWAMPY;
-    } else {
+    }
+    else {
       startId = SPRITE_MASKED_ORC;
       endId = SPRITE_NECROMANCER;
     }
@@ -393,16 +405,16 @@ void freezeSnake(Snake* snake, int duration) {
   if (!snake->buffs[BUFF_DEFFENCE]) snake->buffs[BUFF_FROZEN] += duration;
   Effect* effect = NULL;
   if (snake->buffs[BUFF_DEFFENCE]) {
-    effect = (Effect*) malloc(sizeof(Effect));
+    effect = (Effect*)malloc(sizeof(Effect));
     copyEffect(&effects[EFFECT_VANISH30], effect);
     duration = 30;
   }
   for (LinkNode* p = snake->sprites->head; p; p = p->nxt) {
     Sprite* sprite = (Sprite*)p->element;
     Animation* ani = createAndPushAnimation(
-        &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_ICE], effect,
-        LOOP_ONCE, duration, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
-        AT_BOTTOM_CENTER);
+      &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_ICE], effect,
+      LOOP_ONCE, duration, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
+      AT_BOTTOM_CENTER);
     ani->scaled = false;
     if (snake->buffs[BUFF_DEFFENCE]) continue;
     bindAnimationToSprite(ani, sprite, true);
@@ -414,16 +426,16 @@ void slowDownSnake(Snake* snake, int duration) {
   if (!snake->buffs[BUFF_DEFFENCE]) snake->buffs[BUFF_SLOWDOWN] += duration;
   Effect* effect = NULL;
   if (snake->buffs[BUFF_DEFFENCE]) {
-    effect = (Effect*) malloc(sizeof(Effect));
+    effect = (Effect*)malloc(sizeof(Effect));
     copyEffect(&effects[EFFECT_VANISH30], effect);
     duration = 30;
   }
   for (LinkNode* p = snake->sprites->head; p; p = p->nxt) {
-    Sprite* sprite = (Sprite*) p->element;
+    Sprite* sprite = (Sprite*)p->element;
     Animation* ani = createAndPushAnimation(
-        &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_SOLIDFX], effect,
-        LOOP_LIFESPAN, 40, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
-        AT_BOTTOM_CENTER);
+      &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_SOLIDFX], effect,
+      LOOP_LIFESPAN, 40, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
+      AT_BOTTOM_CENTER);
     ani->lifeSpan = duration;
     ani->scaled = false;
     if (snake->buffs[BUFF_DEFFENCE]) continue;
@@ -433,9 +445,9 @@ void slowDownSnake(Snake* snake, int duration) {
 
 void shieldSprite(Sprite* sprite, int duration) {
   Animation* ani = createAndPushAnimation(
-      &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_HOLY_SHIELD], NULL,
-      LOOP_LIFESPAN, 40, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
-      AT_BOTTOM_CENTER);
+    &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_HOLY_SHIELD], NULL,
+    LOOP_LIFESPAN, 40, sprite->x, sprite->y, SDL_FLIP_NONE, 0,
+    AT_BOTTOM_CENTER);
   bindAnimationToSprite(ani, sprite, true);
   ani->lifeSpan = duration;
 }
@@ -444,15 +456,15 @@ void shieldSnake(Snake* snake, int duration) {
   if (snake->buffs[BUFF_DEFFENCE]) return;
   snake->buffs[BUFF_DEFFENCE] += duration;
   for (LinkNode* p = snake->sprites->head; p; p = p->nxt) {
-    shieldSprite((Sprite*) p->element, duration);
+    shieldSprite((Sprite*)p->element, duration);
   }
 }
 
 void attackUpSprite(Sprite* sprite, int duration) {
   Animation* ani = createAndPushAnimation(
-      &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_ATTACK_UP], NULL,
-      LOOP_LIFESPAN, SPRITE_ANIMATION_DURATION, sprite->x, sprite->y,
-      SDL_FLIP_NONE, 0, AT_BOTTOM_CENTER);
+    &animationsList[RENDER_LIST_EFFECT_ID], &textures[RES_ATTACK_UP], NULL,
+    LOOP_LIFESPAN, SPRITE_ANIMATION_DURATION, sprite->x, sprite->y,
+    SDL_FLIP_NONE, 0, AT_BOTTOM_CENTER);
   bindAnimationToSprite(ani, sprite, true);
   ani->lifeSpan = duration;
 }
@@ -532,7 +544,7 @@ void destroyGame(int status) {
 void destroySnake(Snake* snake) {
   if (bullets)
     for (LinkNode* p = bullets->head; p; p = p->nxt) {
-      Bullet* bullet = (Bullet*) p->element;
+      Bullet* bullet = (Bullet*)p->element;
       if (bullet->owner == snake) bullet->owner = NULL;
     }
   for (LinkNode* p = snake->sprites->head; p; p = p->nxt) {
@@ -562,7 +574,7 @@ inline bool isPlayer(Snake* snake) {
 bool crushVerdict(Sprite* sprite, bool loose, bool useAnimationBox) {
   int x = sprite->x, y = sprite->y;
   SDL_Rect block, box = useAnimationBox ? getSpriteAnimationBox(sprite)
-                                        : getSpriteFeetBox(sprite);
+    : getSpriteFeetBox(sprite);
 
   // If the sprite is out of the map, then consider it as crushed
   if (inr(x / UNIT, 0, n - 1) && inr(y / UNIT, 0, m - 1))
@@ -588,14 +600,15 @@ bool crushVerdict(Sprite* sprite, bool loose, bool useAnimationBox) {
       Sprite* other = (Sprite*)p->element;
       if (other != sprite) {
         SDL_Rect otherBox = useAnimationBox ? getSpriteAnimationBox(other)
-                                            : getSpriteFeetBox(other);
+          : getSpriteFeetBox(other);
         if (RectRectCross(&box, &otherBox)) {
           if ((self && loose) || (p->pre && p->pre->element == sprite))
             ;
           else
             return true;
         }
-      } else
+      }
+      else
         self = true;
     }
   }
@@ -605,7 +618,7 @@ bool crushVerdict(Sprite* sprite, bool loose, bool useAnimationBox) {
 void dropItem(Sprite* sprite) {
   double random = randDouble() * sprite->dropRate * GAME_LUCKY;
 #ifdef DBG
-// printf("%lf\n", random);
+  // printf("%lf\n", random);
 #endif
   if (random < GAME_DROPOUT_YELLOW_FLASKS)
     dropItemNearSprite(sprite, ITEM_HP_EXTRA_MEDCINE);
@@ -620,21 +633,21 @@ void invokeWeaponBuff(Snake* src, Weapon* weapon, Snake* dest, int damage) {
     if (src && src->team == GAME_MONSTERS_TEAM)
       random *= GAME_MONSTERS_WEAPON_BUFF_ADJUST;
     if (random < weapon->effects[i].chance) switch (i) {
-        case BUFF_FROZEN:
-          freezeSnake(dest, weapon->effects[i].duration);
-          break;
-        case BUFF_SLOWDOWN:
-          slowDownSnake(dest, weapon->effects[i].duration);
-          break;
-        case BUFF_DEFFENCE:
-          if (src) shieldSnake(src, weapon->effects[i].duration);
-          break;
-        case BUFF_ATTACK:
-          if (src) attackUpSnkae(src, weapon->effects[i].duration);
-          break;
-        default:
-          break;
-      }
+    case BUFF_FROZEN:
+      freezeSnake(dest, weapon->effects[i].duration);
+      break;
+    case BUFF_SLOWDOWN:
+      slowDownSnake(dest, weapon->effects[i].duration);
+      break;
+    case BUFF_DEFFENCE:
+      if (src) shieldSnake(src, weapon->effects[i].duration);
+      break;
+    case BUFF_ATTACK:
+      if (src) attackUpSnkae(src, weapon->effects[i].duration);
+      break;
+    default:
+      break;
+    }
   }
 }
 
@@ -661,7 +674,7 @@ bool makeSnakeCross(Snake* snake) {
   for (int i = 0; i < SCREEN_WIDTH / UNIT; i++)
     for (int j = 0; j < SCREEN_HEIGHT / UNIT; j++)
       if (hasMap[i][j]) {
-        SDL_Rect block = {i * UNIT, j * UNIT, UNIT, UNIT};
+        SDL_Rect block = { i * UNIT, j * UNIT, UNIT, UNIT };
         if (map[i][j].bp == BLOCK_TRAP && map[i][j].enable) {
           for (LinkNode* p = snake->sprites->head; p; p = p->nxt) {
             Sprite* sprite = (Sprite*)p->element;
@@ -682,22 +695,24 @@ bool makeSnakeCross(Snake* snake) {
                 appendSpriteToSnake(snake, itemMap[i][j].id, 0, 0, RIGHT);
                 herosCount--;
                 removeAnimationFromLinkList(
-                    &animationsList[RENDER_LIST_SPRITE_ID], ani);
-              } else if (itemMap[i][j].type == ITEM_HP_MEDCINE ||
-                         itemMap[i][j].type == ITEM_HP_EXTRA_MEDCINE) {
+                  &animationsList[RENDER_LIST_SPRITE_ID], ani);
+              }
+              else if (itemMap[i][j].type == ITEM_HP_MEDCINE ||
+                itemMap[i][j].type == ITEM_HP_EXTRA_MEDCINE) {
                 playAudio(AUDIO_MED);
                 takeHpMedcine(snake, GAME_HP_MEDICINE_DELTA,
-                              itemMap[i][j].type == ITEM_HP_EXTRA_MEDCINE);
+                  itemMap[i][j].type == ITEM_HP_EXTRA_MEDCINE);
                 flasksCount -= itemMap[i][j].type == ITEM_HP_MEDCINE;
 
                 removeAnimationFromLinkList(
-                    &animationsList[RENDER_LIST_MAP_ITEMS_ID], ani);
-              } else if (itemMap[i][j].type == ITEM_WEAPON) {
+                  &animationsList[RENDER_LIST_MAP_ITEMS_ID], ani);
+              }
+              else if (itemMap[i][j].type == ITEM_WEAPON) {
                 taken = takeWeapon(snake, &itemMap[i][j]);
                 if (taken) {
                   playAudio(AUDIO_MED);
                   removeAnimationFromLinkList(
-                      &animationsList[RENDER_LIST_MAP_ITEMS_ID], ani);
+                    &animationsList[RENDER_LIST_MAP_ITEMS_ID], ani);
                 }
               }
               if (taken) itemMap[i][j].type = ITEM_NONE;
@@ -714,17 +729,17 @@ bool makeSnakeCross(Snake* snake) {
       if (isPlayer(snake)) death++;
       dropItem(sprite);
       createAndPushAnimation(
-          &animationsList[RENDER_LIST_DEATH_ID], &textures[RES_SKULL], NULL,
-          LOOP_INFI, 1,
-          sprite->x + randInt(-MAP_SKULL_SPILL_RANGE, MAP_SKULL_SPILL_RANGE),
-          sprite->y + randInt(-MAP_SKULL_SPILL_RANGE, MAP_SKULL_SPILL_RANGE),
-          sprite->face == LEFT ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL, 0,
-          AT_BOTTOM_CENTER);
+        &animationsList[RENDER_LIST_DEATH_ID], &textures[RES_SKULL], NULL,
+        LOOP_INFI, 1,
+        sprite->x + randInt(-MAP_SKULL_SPILL_RANGE, MAP_SKULL_SPILL_RANGE),
+        sprite->y + randInt(-MAP_SKULL_SPILL_RANGE, MAP_SKULL_SPILL_RANGE),
+        sprite->face == LEFT ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL, 0,
+        AT_BOTTOM_CENTER);
       createAndPushAnimation(
-          &animationsList[RENDER_LIST_DEATH_ID], death, &effects[EFFECT_DEATH],
-          LOOP_ONCE, SPRITE_ANIMATION_DURATION, sprite->x, sprite->y,
-          sprite->face == RIGHT ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL, 0,
-          AT_BOTTOM_CENTER);
+        &animationsList[RENDER_LIST_DEATH_ID], death, &effects[EFFECT_DEATH],
+        LOOP_ONCE, SPRITE_ANIMATION_DURATION, sprite->x, sprite->y,
+        sprite->face == RIGHT ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL, 0,
+        AT_BOTTOM_CENTER);
       /* TOO BLOODY
   createAndPushAnimation(
       &animationsList[RENDER_LIST_MAP_SPECIAL_ID], &textures[randInt(RES_BLOOD1,
@@ -736,18 +751,18 @@ bool makeSnakeCross(Snake* snake) {
       clearBindInAnimationsList(sprite, RENDER_LIST_EFFECT_ID);
       clearBindInAnimationsList(sprite, RENDER_LIST_SPRITE_ID);
       removeAnimationFromLinkList(&animationsList[RENDER_LIST_SPRITE_ID],
-                                  sprite->ani);
+        sprite->ani);
       sprite->ani = NULL;
       snake->num--;
     }
   }
   // Update position
-  for (LinkNode *p = snake->sprites->head, *nxt; p; p = nxt) {
+  for (LinkNode* p = snake->sprites->head, *nxt; p; p = nxt) {
     Sprite* sprite = (Sprite*)p->element;
     nxt = p->nxt;
     if (sprite->hp <= 0) {
       for (LinkNode* q = snake->sprites->tail; q != p; q = q->pre) {
-        Sprite *prevSprite = (Sprite*)q->pre->element, *sprite = (Sprite*)q->element;
+        Sprite* prevSprite = (Sprite*)q->pre->element, * sprite = (Sprite*)q->element;
         sprite->direction = prevSprite->direction;
         sprite->face = prevSprite->face;
         sprite->posBuffer = prevSprite->posBuffer;
@@ -774,9 +789,9 @@ bool makeBulletCross(Bullet* bullet) {
   Weapon* weapon = bullet->parent;
   bool hit = false;
   int width = MIN(bullet->ani->origin->width, bullet->ani->origin->height) *
-              (bullet->ani->scaled ? SCALE_FACTOR : 1) * 0.8;
-  SDL_Rect bulletBox = {bullet->x - width / 2, bullet->y - width / 2, width,
-                        width};
+    (bullet->ani->scaled ? SCALE_FACTOR : 1) * 0.8;
+  SDL_Rect bulletBox = { bullet->x - width / 2, bullet->y - width / 2, width,
+                        width };
   if (!hasMap[bullet->x / UNIT][bullet->y / UNIT]) {
     Animation* ani = (Animation*)malloc(sizeof(Animation));
     copyAnimation(weapon->deathAni, ani);
@@ -789,7 +804,7 @@ bool makeBulletCross(Bullet* bullet) {
     for (int i = 0; i < spritesCount; i++)
       if (bullet->team != spriteSnake[i]->team) {
         for (LinkNode* p = spriteSnake[i]->sprites->head; p; p = p->nxt) {
-          Sprite* target =(Sprite*) p->element;
+          Sprite* target = (Sprite*)p->element;
           SDL_Rect box = getSpriteBoundBox(target);
           if (RectRectCross(&box, &bulletBox)) {
             Animation* ani = (Animation*)malloc(sizeof(Animation));
@@ -798,11 +813,11 @@ bool makeBulletCross(Bullet* bullet) {
             pushAnimationToRender(RENDER_LIST_EFFECT_ID, ani);
             hit = true;
             if (weapon->wp == WEAPON_GUN_POINT ||
-                weapon->wp == WEAPON_GUN_POINT_MULTI) {
+              weapon->wp == WEAPON_GUN_POINT_MULTI) {
               dealDamage(bullet->owner, spriteSnake[i], target, weapon->damage);
 
               invokeWeaponBuff(bullet->owner, weapon, spriteSnake[i],
-                               weapon->damage);
+                weapon->damage);
               return hit;
             }
             break;
@@ -815,11 +830,13 @@ bool makeBulletCross(Bullet* bullet) {
       if (bullet->team != spriteSnake[i]->team) {
         for (LinkNode* p = spriteSnake[i]->sprites->head; p; p = p->nxt) {
           Sprite* target = (Sprite*)p->element;
-          if (distance((Point){target->x, target->y},
-                       (Point){bullet->x, bullet->y}) <= weapon->effectRange) {
+          if (distance((Point) { target->x, target->y },
+            (Point) {
+            bullet->x, bullet->y
+          }) <= weapon->effectRange) {
             dealDamage(bullet->owner, spriteSnake[i], target, weapon->damage);
             invokeWeaponBuff(bullet->owner, weapon, spriteSnake[i],
-                             weapon->damage);
+              weapon->damage);
           }
         }
       }
@@ -830,12 +847,12 @@ void makeCross() {
   for (int i = 0; i < spritesCount; i++) {
     makeSnakeCross(spriteSnake[i]);
   }
-  for (LinkNode *p = bullets->head, *nxt; p; p = nxt) {
+  for (LinkNode* p = bullets->head, *nxt; p; p = nxt) {
     nxt = p->nxt;
     if (makeBulletCross((Bullet*)p->element)) {
       Bullet* bullet = (Bullet*)p->element;
       removeAnimationFromLinkList(&animationsList[RENDER_LIST_EFFECT_ID],
-                                  bullet->ani);
+        bullet->ani);
       removeLinkNode(bullets, p);
     }
   }
@@ -878,17 +895,18 @@ void updateMap() {
       if (hasMap[i][j] && map[i][j].bp == BLOCK_TRAP) {
         if (!maskedTime)
           createAndPushAnimation(&animationsList[RENDER_LIST_MAP_SPECIAL_ID],
-                                 &textures[RES_FLOOR_SPIKE_OUT_ANI], NULL,
-                                 LOOP_ONCE, SPIKE_ANI_DURATION, i * UNIT,
-                                 j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+            &textures[RES_FLOOR_SPIKE_OUT_ANI], NULL,
+            LOOP_ONCE, SPIKE_ANI_DURATION, i * UNIT,
+            j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
         else if (maskedTime == SPIKE_ANI_DURATION - 1) {
           map[i][j].enable = true;
           map[i][j].ani->origin = &textures[RES_FLOOR_SPIKE_ENABLED];
-        } else if (maskedTime == SPIKE_ANI_DURATION + SPIKE_OUT_INTERVAL - 1) {
+        }
+        else if (maskedTime == SPIKE_ANI_DURATION + SPIKE_OUT_INTERVAL - 1) {
           createAndPushAnimation(&animationsList[RENDER_LIST_MAP_SPECIAL_ID],
-                                 &textures[RES_FLOOR_SPIKE_IN_ANI], NULL,
-                                 LOOP_ONCE, SPIKE_ANI_DURATION, i * UNIT,
-                                 j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
+            &textures[RES_FLOOR_SPIKE_IN_ANI], NULL,
+            LOOP_ONCE, SPIKE_ANI_DURATION, i * UNIT,
+            j * UNIT, SDL_FLIP_NONE, 0, AT_TOP_LEFT);
           map[i][j].enable = false;
           map[i][j].ani->origin = &textures[RES_FLOOR_SPIKE_DISABLED];
         }
@@ -912,30 +930,33 @@ void makeSpriteAttack(Sprite* sprite, Snake* snake) {
     if (snake->team != spriteSnake[i]->team) {
       for (LinkNode* p = spriteSnake[i]->sprites->head; p; p = p->nxt) {
         Sprite* target = (Sprite*)p->element;
-        if (distance((Point){sprite->x, sprite->y},
-                     (Point){target->x, target->y}) > weapon->shootRange)
+        if (distance((Point) { sprite->x, sprite->y },
+          (Point) {
+          target->x, target->y
+        }) > weapon->shootRange)
           continue;
-        double rad = atan2(target->y - sprite->y, target->x - sprite->x);
-        if (weapon->wp == WEAPON_SWORD_POINT ||
+          double rad = atan2(target->y - sprite->y, target->x - sprite->x);
+          if (weapon->wp == WEAPON_SWORD_POINT ||
             weapon->wp == WEAPON_SWORD_RANGE) {
-          Animation* ani = (Animation*)malloc(sizeof(Animation));
-          copyAnimation(weapon->deathAni, ani);
-          // ani->x = target->x, ani->y = target->y;
-          bindAnimationToSprite(ani, target, false);
-          if (ani->angle != -1) ani->angle = rad * 180 / PI;
-          pushAnimationToRender(RENDER_LIST_EFFECT_ID, ani);
-          dealDamage(snake, spriteSnake[i], target, weapon->damage);
-          invokeWeaponBuff(snake, weapon, spriteSnake[i], weapon->damage);
-          attacked = true;
-          if (weapon->wp == WEAPON_SWORD_POINT) goto ATTACK_END;
-        } else {
-          Bullet* bullet = createBullet(snake, weapon, sprite->x, sprite->y,
-                                        rad, snake->team, weapon->flyAni);
-          pushLinkNode(bullets, createLinkNode(bullet));
-          pushAnimationToRender(RENDER_LIST_EFFECT_ID, bullet->ani);
-          attacked = true;
-          if (weapon->wp != WEAPON_GUN_POINT_MULTI) goto ATTACK_END;
-        }
+            Animation* ani = (Animation*)malloc(sizeof(Animation));
+            copyAnimation(weapon->deathAni, ani);
+            // ani->x = target->x, ani->y = target->y;
+            bindAnimationToSprite(ani, target, false);
+            if (ani->angle != -1) ani->angle = rad * 180 / PI;
+            pushAnimationToRender(RENDER_LIST_EFFECT_ID, ani);
+            dealDamage(snake, spriteSnake[i], target, weapon->damage);
+            invokeWeaponBuff(snake, weapon, spriteSnake[i], weapon->damage);
+            attacked = true;
+            if (weapon->wp == WEAPON_SWORD_POINT) goto ATTACK_END;
+          }
+          else {
+            Bullet* bullet = createBullet(snake, weapon, sprite->x, sprite->y,
+              rad, snake->team, weapon->flyAni);
+            pushLinkNode(bullets, createLinkNode(bullet));
+            pushAnimationToRender(RENDER_LIST_EFFECT_ID, bullet->ani);
+            attacked = true;
+            if (weapon->wp != WEAPON_GUN_POINT_MULTI) goto ATTACK_END;
+          }
       }
     }
 ATTACK_END:
@@ -1000,36 +1021,36 @@ void pauseGame() {
 
 int arrowsToDirection(int keyValue) {
   switch (keyValue) {
-    case SDLK_LEFT:
-      return LEFT;
-      break;
-    case SDLK_RIGHT:
-      return RIGHT;
-      break;
-    case SDLK_UP:
-      return UP;
-      break;
-    case SDLK_DOWN:
-      return DOWN;
-      break;
+  case SDLK_LEFT:
+    return LEFT;
+    break;
+  case SDLK_RIGHT:
+    return RIGHT;
+    break;
+  case SDLK_UP:
+    return UP;
+    break;
+  case SDLK_DOWN:
+    return DOWN;
+    break;
   }
   return -1;
 }
 
 int wasdToDirection(int keyValue) {
   switch (keyValue) {
-    case SDLK_a:
-      return LEFT;
-      break;
-    case SDLK_d:
-      return RIGHT;
-      break;
-    case SDLK_w:
-      return UP;
-      break;
-    case SDLK_s:
-      return DOWN;
-      break;
+  case SDLK_a:
+    return LEFT;
+    break;
+  case SDLK_d:
+    return RIGHT;
+    break;
+  case SDLK_w:
+    return UP;
+    break;
+  case SDLK_s:
+    return DOWN;
+    break;
   }
   return -1;
 }
@@ -1041,7 +1062,8 @@ bool handleLocalKeypress() {
     if (e.type == SDL_QUIT) {
       quit = true;
       setTerm(GAME_OVER);
-    } else if (e.type == SDL_KEYDOWN) {
+    }
+    else if (e.type == SDL_KEYDOWN) {
       int keyValue = e.key.keysym.sym;
       if (keyValue == SDLK_ESCAPE) pauseGame();
       for (int id = 0; id <= 1 && id < playersCount; id++) {
@@ -1049,7 +1071,7 @@ bool handleLocalKeypress() {
         if (player->playerType == LOCAL) {
           if (!player->buffs[BUFF_FROZEN] && player->sprites->head != NULL) {
             int direction = id == 0 ? arrowsToDirection(keyValue)
-                                    : wasdToDirection(keyValue);
+              : wasdToDirection(keyValue);
             if (direction >= 0) {
               sendPlayerMovePacket(id, direction);
               changeSpriteDirection(player->sprites->head, (Direction)direction);
@@ -1072,10 +1094,11 @@ void handleLanKeypress() {
     Snake* player = spriteSnake[playerMovePacket->playerId];
     int direction = playerMovePacket->direction;
     fprintf(stderr, "recv: player move, %d, %d\n", playerMovePacket->playerId,
-            direction);
+      direction);
     if (player->sprites->head)
       changeSpriteDirection(player->sprites->head, (Direction)direction);
-  } else if (type == HEADER_GAMEOVER) {
+  }
+  else if (type == HEADER_GAMEOVER) {
     fprintf(stderr, "recv: game over, %d\n", -1);
     setTerm(GAME_OVER);
   }
@@ -1125,14 +1148,16 @@ int gameLoop() {
     if (willTerm) {
       termCount--;
       if (!termCount) break;
-    } else {
+    }
+    else {
       int alivePlayer = -1;
       for (int i = 0; i < playersCount; i++) {
         if (!spriteSnake[i]->sprites->head) {
           setTerm(GAME_OVER);
           sendGameOverPacket(alivePlayer);
           break;
-        } else
+        }
+        else
           alivePlayer = i;
       }
       if (isWin()) {
