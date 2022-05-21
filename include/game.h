@@ -29,8 +29,6 @@
 #define GAME_BUFF_ATTACK_K 2.5
 #define GAME_BUFF_DEFENSE_K 2
 #define GAME_FROZEN_DAMAGE_K 0.1
-// Drop Rate
-// Win
 
 void pushMapToRender();
 Score** startGame(int localPlayers, int remotePlayers, bool localFirst);
@@ -39,7 +37,6 @@ void destroyGame(int);
 int gameLoop();
 void updateAnimationOfSprite(Sprite* self);
 void updateAnimationOfBlock(Block* self);
-// this should only be used to create once or permant animation
 Animation* createAndPushAnimation(LinkList* list, Texture* texture,
                                   const Effect* effect, LoopType lp,
                                   int duration, int x, int y,

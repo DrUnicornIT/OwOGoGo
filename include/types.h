@@ -43,13 +43,11 @@ typedef struct {
   int x, y;
   double angle;
   SDL_RendererFlip flip;
-  At at;       // How this animation should be aligned according to (x, y)
-  void* bind;  // Points to a Sprite struct. The animation should use the
-               // sprite's position
+  At at;       
+  void* bind;  
   bool scaled;
-  bool dieWithBind;  // Determines if the animation should be destroyed when the
-                     // sprite dies
-  int lifeSpan;      // How many seconds the animation should play
+  bool dieWithBind;  
+  int lifeSpan;    
 } Animation;
 
 void initTexture(Texture* self, SDL_Texture* origin, int width, int height,

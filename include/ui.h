@@ -5,8 +5,9 @@
 #define UI_MAIN_GAP 40
 #define UI_MAIN_GAP_ALT 22
 int chooseOptions(int optsNum, Text** options);
-void baseUi(int,int);
+void baseUi(int, int);
 void mainUi();
-void rankListUi(int,Score**);
+void rankListUi(int, Score**);
+void helpHowtoPlayGameUi();
 void localRankListUi();
 #endif

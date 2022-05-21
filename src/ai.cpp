@@ -14,7 +14,6 @@ extern int playersCount;
 extern const int n, m;
 extern const int SCALE_FACTOR;
 
-// Sprite
 extern Snake* spriteSnake[SPRITES_MAX_NUM];
 extern int spritesCount;
 double AI_LOCK_LIMIT;
@@ -36,7 +35,7 @@ int trapVerdict(Sprite* sprite) {
     }
   return ret;
 }
-
+//* Trả ra id snake có độ dài "Qua màn", nếu không có thì -1
 int getPowerfulPlayer() {
   int maxNum = 0, mxCount = 0, id = -1;
   for (int i = 0; i < playersCount; i++) {
@@ -92,8 +91,8 @@ int compareChoiceByValue(const Choice* x, const Choice* y) {
 }
 
 void AiInput(Snake* snake) {
-  Sprite* snakeHead = (Sprite*)snake->sprites->head->element;
-  Direction currentDirection = snakeHead->direction;
+  Sprite* snakeHead = (Sprite*)snake->sprites->head->element; // snake head
+  Direction currentDirection = snakeHead->direction; ///< current direction of snake head
   int originValue = testOneMove(snake, currentDirection);
   bool change = originValue < 0;
   if (randDouble() < AI_PATH_RANDOM) change = 1;

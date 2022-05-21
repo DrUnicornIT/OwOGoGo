@@ -52,29 +52,6 @@ void cellularAutomata() {
     }
   memcpy(primMap, tmp, sizeof tmp);
 }
-#ifdef DBG
-void printMap() {
-  putchar('\n');
-  for (int i = 0; i < n; i++) {
-    for (int t = 0; t < 2; t++) {
-      for (int j = 0; j < m; j++) {
-        char ch = primMap[i][j] ? '#' : '.';
-        printf("%c%c", ch, ch);
-      }
-      putchar('\n');
-    }
-  }
-}
-void phasMap() {
-  for (int i = 0; i < SCREEN_WIDTH / UNIT; i++) {
-    for (int j = 0; j < SCREEN_HEIGHT / UNIT; j++) {
-      char ch = hasMap[i][j] ? '#' : '.';
-      putchar(ch);
-    }
-    putchar('\n');
-  }
-}
-#endif
 void initPrimMap(double floorPercent, int smoothTimes) {
   memset(primMap, 0, sizeof(primMap));
   int nn = SCREEN_WIDTH / UNIT, mm = SCREEN_HEIGHT / UNIT;
@@ -95,9 +72,6 @@ void initPrimMap(double floorPercent, int smoothTimes) {
   for (int j = 0; j < m; j++) primMap[0][j] = primMap[n - 1][j] = 0;
   while (smoothTimes--) {
     cellularAutomata();
-#ifdef DBG
-    // printMap(n, m);
-#endif
   }
 }
 void initBlock(Block* self, BlockType bp, int x, int y, int bid, bool enable) {
@@ -179,9 +153,7 @@ void initRandomMap(double floorPercent, int smoothTimes, double trapRate) {
         hasMap[i * 2][j * 2 + 1] = hasMap[2 * i + 1][2 * j + 1] = 1;
     }
   }
-#ifdef DBG
-  phasMap();
-#endif
+
   for (int t = n * m * trapRate; t > 0; t--) {
     int x, y;
     do {
@@ -198,9 +170,7 @@ void initRandomMap(double floorPercent, int smoothTimes, double trapRate) {
   } while (!(hasMap[exitX][exitY] && !isTrap[exitX][exitY]));
   initBlock(&map[exitX][exitY], BLOCK_EXIT, exitX * UNIT, exitY * UNIT,
     RES_FLOOR_EXIT, false);
-#ifdef DBG
-  printf("exit: %d %d\n", exitX, exitY);
-#endif
+
   initMap();
   decorateMap();
 }
@@ -327,9 +297,6 @@ void pushMapToRender() {
     for (int j = 0; j < SCREEN_HEIGHT / UNIT; j++) {
       if (!hasMap[i][j]) continue;
       LinkNode* node = createLinkNode(map[i][j].ani);
-#ifdef DBG
-      assert(node->element);
-#endif
       pushLinkNode(&animationsList[RENDER_LIST_MAP_ID], node);
     }
   }

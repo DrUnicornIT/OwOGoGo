@@ -2,13 +2,15 @@
 #define SNAKE_ADT_H_
 #include "types.h"
 // ADT
+
+// Add element to the end of the list
 struct _LinkNode {
   void* element;
-  struct _LinkNode *pre, *nxt;
+  struct _LinkNode* pre, * nxt;
 };
 typedef struct _LinkNode LinkNode;
 typedef struct {
-  LinkNode *head, *tail;
+  LinkNode* head, * tail;
 } LinkList;
 
 void initLinkNode(LinkNode* self);

@@ -12,13 +12,14 @@
 #include "render.h"
 #include "weapon.h"
 
+#include <iostream>
 
-
+// Constants
 extern const int n = SCREEN_WIDTH / UNIT;
 extern const int m = SCREEN_HEIGHT / UNIT;
 
 const char tilesetPath[TILESET_SIZE][PATH_LEN] = {
-    "res/drawable/0x72_DungeonTilesetII_v1_3",
+    "res/drawable/OwOmain",
     "res/drawable/fireball_explosion1",
     "res/drawable/halo_explosion1",
     "res/drawable/halo_explosion2",
@@ -141,11 +142,6 @@ bool init() {
           printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
           success = false;
         }
-        //Initialize SDL_net
-        if (SDLNet_Init() == -1) {
-          printf("SDL_Net_Init: %s\n", SDLNet_GetError());
-          success = false;
-        }
       }
     }
   }
@@ -186,9 +182,6 @@ bool loadTextset() {
     if (!initText(&texts[textsCount++], str, WHITE)) {
       success = false;
     }
-#ifdef DBG
-    printf("Texts #%d: %s loaded\n", textsCount - 1, str);
-#endif
   }
   fclose(file);
   return success;
@@ -198,6 +191,7 @@ bool loadTileset(const char* path, SDL_Texture* origin) {
   int x, y, w, h, f;
   char resName[256];
   while (fscanf(file, "%s %d %d %d %d %d", resName, &x, &y, &w, &h, &f) == 6) {
+    std::cout << "Loading " << resName << '\n';
     Texture* p = &textures[texturesCount++];
     initTexture(p, origin, w, h, f);
     for (int i = 0; i < f; i++) {
@@ -206,10 +200,6 @@ bool loadTileset(const char* path, SDL_Texture* origin) {
       p->crops[i].h = h;
       p->crops[i].w = w;
     }
-#ifdef DBG
-    printf("Resources #%d: %s %d %d %d %d %d loaded\n", texturesCount - 1,
-      resName, x, y, w, h, f);
-#endif
   }
   fclose(file);
   return true;
@@ -220,9 +210,6 @@ bool loadAudio() {
     bgms[i] = Mix_LoadMUS(bgmsPath[i]);
     success &= bgms[i] != NULL;
     if (!bgms[i]) printf("Failed to load %s: SDL_mixer Error: %s\n", bgmsPath[i], Mix_GetError());
-#ifdef DBG
-    else printf("BGM %s loaded\n", bgmsPath[i]);
-#endif
   }
   FILE* f = fopen(soundsPath, "r");
   char buf[PATH_LEN], path[PATH_LEN << 1];
@@ -231,9 +218,6 @@ bool loadAudio() {
     sounds[soundsCount] = Mix_LoadWAV(path);
     success &= sounds[soundsCount] != NULL;
     if (!sounds[soundsCount]) printf("Failed to load %s: : SDL_mixer Error: %s\n", path, Mix_GetError());
-#ifdef DBG
-    else printf("Sound #%d: %s\n", soundsCount, path);
-#endif
     soundsCount++;
   }
   fclose(f);
@@ -292,7 +276,6 @@ void cleanup() {
   TTF_Quit();
   IMG_Quit();
   Mix_CloseAudio();
-  SDLNet_Quit();
   SDL_Quit();
 }
 void initCommonEffects() {
@@ -307,9 +290,6 @@ void initCommonEffects() {
   effects[0].keys[2] = death;
   death.r = death.a = 0;
   effects[0].keys[3] = death;
-#ifdef DBG
-  puts("Effect #0: Death loaded");
-#endif
 
   // Effect #1: Blink ( white )
   initEffect(&effects[1], 30, 3, SDL_BLENDMODE_ADD);
@@ -319,17 +299,13 @@ void initCommonEffects() {
   effects[1].keys[1] = blink;
   blink.r = blink.g = blink.b = 0;
   effects[1].keys[2] = blink;
-#ifdef DBG
-  puts("Effect #1: Blink (white) loaded");
-#endif
+
   initEffect(&effects[2], 30, 2, SDL_BLENDMODE_BLEND);
   SDL_Color vanish = { 255, 255, 255, 255 };
   effects[2].keys[0] = vanish;
   vanish.a = 0;
   effects[2].keys[1] = vanish;
-#ifdef DBG
-  puts("Effect #2: Vanish (30fm) loaded");
-#endif
+
 }
 void initCommonSprite(Sprite* sprite, Weapon* weapon, int res_id, int hp) {
   Animation* ani = createAnimation(&textures[res_id], NULL, LOOP_INFI,

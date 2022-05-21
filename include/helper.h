@@ -11,7 +11,7 @@
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x > y ? y : x)
 #define PI 3.1415926535
-#define HELPER_RECT_CROSS_LIMIT 8
+#define HELPER_RECT_CROSS_LIMIT 8 // 8 is the limit of the cross product of two rectangles (a, b) and (c, d)
 int randInt(int l, int r);
 // return random double in [0, 1]
 double randDouble();

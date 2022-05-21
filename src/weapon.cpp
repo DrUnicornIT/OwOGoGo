@@ -214,8 +214,4 @@ void initWeapons() {
   now->deathAni->at = AT_CENTER;
   now->effects[BUFF_FROZEN] = (WeaponBuff){ 0.6, 80 };
   now->deathAudio = AUDIO_SWORD_HIT;
-
-#ifdef DBG
-  puts("weapon done");
-#endif
 }

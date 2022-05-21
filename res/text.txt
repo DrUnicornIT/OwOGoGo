@@ -1,0 +1,19 @@
+Play
+Introduce
+Help
+Rank
+Exit
+Normal
+Hard
+Very Hard	
+Use WASD to move player.
+Try to survive among monsters and find your missing teammates 
+Acquire weapons, potions to increase strength
+In the future the monsters will be stronger than the increased rewards
+Enjoin 🧡
+Knight HP: 150 - Use weapon is sword
+Elf HP: 100 - Use weapon is arrow
+Wizzard HP: 95 - Use weapon is fireball
+Lizard HP: 120 - Use weapon is claw
+
+

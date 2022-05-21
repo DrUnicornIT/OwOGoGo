@@ -13,10 +13,10 @@ extern Texture textures[];
 bool inr(int x, int l, int r) { return x <= r && l <= x; }
 int randInt(int l, int r) { return prngRand() % (r - l + 1) + l; }
 double randDouble() { return (double)prngRand() / PRNG_MAX; }
-int IntervalCalc(int l1, int r1, int l2, int r2) {
+int IntervalCalc(int l1, int r1, int l2, int r2) { // Length of interval
   return MAX(-MAX(l1, l2) + MIN(r1, r2), 0);
 }
-int RectRectCalc(SDL_Rect* a, SDL_Rect* b) {
+int RectRectCalc(SDL_Rect* a, SDL_Rect* b) {  // Nếu không giao thì <= 0
   return IntervalCalc(a->x, a->x + a->w, b->x, b->x + b->w) *
     IntervalCalc(a->y, a->y + a->h, b->y, b->y + b->h);
 }
@@ -24,7 +24,7 @@ bool IntervalCross(int l1, int r1, int l2, int r2) {
   return MAX(l1, l2) < MIN(r1, r2);
 }
 bool RectRectCross(SDL_Rect* a, SDL_Rect* b) {
-  return RectRectCalc(a, b) >= HELPER_RECT_CROSS_LIMIT;
+  return RectRectCalc(a, b) >= HELPER_RECT_CROSS_LIMIT; 
 }
 bool RectCirCross(SDL_Rect* a, int x, int y, int r) {
   if (inr(x, a->x, a->x + a->w) && inr(y, a->y, a->y + a->h)) {

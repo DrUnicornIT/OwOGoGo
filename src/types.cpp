@@ -212,14 +212,15 @@ void removeAnimationFromLinkList(LinkList* self, Animation* ani) {
 }
 void changeSpriteDirection(LinkNode* self, Direction newDirection) {
   Sprite* sprite = (Sprite*)self->element;
-  if (sprite->direction == (1 ^ newDirection)) return;
+  if (sprite->direction == (1 ^ newDirection)) return; // Trái hướng
   sprite->direction = newDirection;
   if (newDirection == LEFT || newDirection == RIGHT)
     sprite->face = newDirection;
   if (self->nxt) {
     Sprite* nextSprite = (Sprite*)self->nxt->element;
+    // Push vị trí đệm cho đứa đứng sau
     PositionBufferSlot slot = { sprite->x, sprite->y, sprite->direction };
-    pushToPositionBuffer(&nextSprite->posBuffer, slot);
+    pushToPositionBuffer(&nextSprite->posBuffer, slot); // Nap
   }
 }
 void initScore(Score* score) { memset(score, 0, sizeof(Score)); }

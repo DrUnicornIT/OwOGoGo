@@ -2,8 +2,8 @@
 
 #include "helper.h"
 
-Bullet* createBullet(Snake* owner, Weapon* parent, int x, int y, double rad,
-  int team, Animation* ani) {
+//-- Create a bullet --//
+Bullet* createBullet(Snake* owner, Weapon* parent, int x, int y, double rad, int team, Animation* ani) {
   Bullet* bullet = (Bullet*)malloc(sizeof(Bullet));
   *bullet = (Bullet){ parent, x, y, team, owner, rad, (Animation*)malloc(sizeof(Animation)) };
   copyAnimation(ani, bullet->ani);
@@ -12,6 +12,9 @@ Bullet* createBullet(Snake* owner, Weapon* parent, int x, int y, double rad,
   bullet->ani->angle = rad * 180 / PI;
   return bullet;
 }
+
+
+// -- move Bullet all map --//
 void moveBullet(Bullet* bullet) {
   int speed = bullet->parent->bulletSpeed;
   bullet->x += cos(bullet->rad) * speed;

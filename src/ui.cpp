@@ -26,7 +26,8 @@ extern int renderFrames;
 extern SDL_Color WHITE;
 extern Texture textures[];
 extern Effect effects[];
-
+extern Weapon* weapons[WEAPONS_SIZE];
+extern Texture textures[TEXTURES_SIZE];
 extern LinkList animationsList[ANIMATION_LINK_LIST_NUM];
 
 //--- Start Chose option ---//
@@ -122,7 +123,7 @@ bool chooseLevelUi()
   int optsNum = 3;
   Text** opts = (Text**)malloc(sizeof(Text*) * optsNum);
   for (int i = 0; i < optsNum; i++)
-    opts[i] = texts + i + 4;
+    opts[i] = texts + i + 5;
   int opt = chooseOptions(optsNum, opts);
   if (opt != optsNum)
     setLevel(opt);
@@ -147,10 +148,10 @@ void helpHowtoPlayGameUi()
 {
   baseUi(30, 12);
   playBgm(0);
-  int optsNum = 3;
+  int optsNum = 5;
   Text** opts = (Text**)malloc(sizeof(Text*) * optsNum);
   for (int i = 0; i < optsNum; i++)
-    opts[i] = texts + i + 7;
+    opts[i] = texts + i + 8;
   int opt = chooseOptions(optsNum, opts);
   free(opts);
 
@@ -195,11 +196,89 @@ void localRankListUi()
 
 //-- Start UI --//
 
+
+int OptionIntroduce(int optionsNum, Text** options)
+{
+  cursorPos = 0;
+  Snake* Snake[optionsNum];
+  Texture weaponItem[optionsNum];
+
+  Snake[0] = createSnake(2, 0, LOCAL);
+  appendSpriteToSnake(Snake[0], SPRITE_KNIGHT, SCREEN_WIDTH / 2,
+    SCREEN_HEIGHT / 2, UP);
+  weaponItem[0] = textures[RES_HOLY_SWORD];
+
+  Snake[1] = createSnake(2, 0, LOCAL);
+  appendSpriteToSnake(Snake[1], SPRITE_ELF, SCREEN_WIDTH / 2,
+    SCREEN_HEIGHT / 2, UP);
+  weaponItem[1] = textures[RES_POWERFUL_BOW];
+
+  Snake[2] = createSnake(2, 0, LOCAL);
+  appendSpriteToSnake(Snake[2], SPRITE_WIZZARD, SCREEN_WIDTH / 2,
+    SCREEN_HEIGHT / 2, UP);
+  weaponItem[2] = textures[RES_FIREBALL];
+
+  Snake[3] = createSnake(2, 0, LOCAL);
+  appendSpriteToSnake(Snake[3], SPRITE_LIZARD, SCREEN_WIDTH / 2,
+    SCREEN_HEIGHT / 2, UP);
+  weaponItem[3] = textures[RES_CLAWFX];
+
+  int lineGap = FONT_SIZE + FONT_SIZE / 2,
+    totalHeight = lineGap * (optionsNum - 1);
+  int startY = (SCREEN_HEIGHT - totalHeight) / 2;
+
+
+  while (!moveCursor(optionsNum))
+  {
+    Sprite* sprite[optionsNum];
+    for (int i = 0; i < optionsNum; i++) {
+      sprite[i] = (Sprite*)Snake[i]->sprites->head->element;
+      sprite[i]->ani->at = AT_CENTER;
+      sprite[i]->x = SCREEN_WIDTH / 2 - options[i]->width / 2 - UNIT / 2;
+      sprite[i]->y = startY + i * lineGap;
+      Animation* ani = createAndPushAnimation(
+        &animationsList[RENDER_LIST_EFFECT_ID], &weaponItem[i], NULL,
+        LOOP_INFI, 3, sprite[i]->x + SCREEN_WIDTH / 2, sprite[i]->y + 100, SDL_FLIP_NONE, 0,
+        AT_BOTTOM_CENTER);
+      bindAnimationToSprite(ani, sprite[i], true);
+      updateAnimationOfSprite(sprite[i]);
+    }
+    renderUi();
+    for (int i = 0; i < optionsNum; i++)
+    {
+      renderCenteredText(options[i], SCREEN_WIDTH / 2, startY + i * lineGap, 1);
+    }
+    SDL_RenderPresent(renderer);
+    renderFrames++;
+  }
+  playAudio(AUDIO_BUTTON1);
+  for (int i = 0; i < optionsNum; i++) {
+    destroySnake(Snake[i]);
+  }
+  destroyAnimationsByLinkList(&animationsList[RENDER_LIST_SPRITE_ID]);
+  return cursorPos;
+}
+
+
+void Introduce() {
+  baseUi(30, 12);
+  
+  playBgm(0);
+  int optsNum = 4;
+  Text** opts = (Text**)malloc(sizeof(Text*) * optsNum);
+  for (int i = 0; i < optsNum; i++)
+    opts[i] = texts + i + 13;
+  int opt = OptionIntroduce(optsNum, opts);
+  free(opts);
+
+  clearRenderer();
+}
+
 void mainUi()
 {
   baseUi(30, 12);
   playBgm(0);
-  int optsNum = 4;
+  int optsNum = 5;
   Text** opts = (Text**)malloc(sizeof(Text*) * optsNum);
   for (int i = 0; i < optsNum; i++)
     opts[i] = texts + i;
@@ -215,17 +294,20 @@ void mainUi()
     launchLocalGame(1);
     break;
   case 1:
-    helpHowtoPlayGameUi();
+    Introduce();
     break;
   case 2:
-    localRankListUi();
+    helpHowtoPlayGameUi();
     break;
   case 3:
+    localRankListUi();
+    break;
+  case 4:
     break;
   }
   if (opt == optsNum)
     return;
-  if (opt != 3)
+  if (opt != 4)
   {
     mainUi();
   }
